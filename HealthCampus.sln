@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthCampus.Services.FileAPI", "HealthCampus.Services.FileAPI\HealthCampus.Services.FileAPI.csproj", "{42944AE1-4E9F-4360-82D2-FF80F89E3590}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCampus.Services.AppFileAPI", "HealthCampus.Services.FileAPI\HealthCampus.Services.AppFileAPI.csproj", "{42944AE1-4E9F-4360-82D2-FF80F89E3590}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{AAD41A06-757B-458A-BFD2-7986BE30989D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{3FA810B5-1B1E-4679-8DD2-565BCD6584B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthCampus.Frontend.Pharmacy", "HealthCampus.Frontend.Pharmacy\HealthCampus.Frontend.Pharmacy.csproj", "{F9692C20-A6FF-4478-B32B-6619C2F9E677}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCampus.Frontend.Pharmacy", "HealthCampus.Frontend.Pharmacy\HealthCampus.Frontend.Pharmacy.csproj", "{F9692C20-A6FF-4478-B32B-6619C2F9E677}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

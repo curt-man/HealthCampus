@@ -1,8 +1,8 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using HealthCampus.Services.FileAPI.Services;
+using HealthCampus.Services.AppFileAPI.Services;
 
-namespace HealthCampus.Services.FileAPI.Services;
+namespace HealthCampus.Services.AppFileAPI.Services;
 
 public class BlobService : IBlobService
 {
@@ -13,34 +13,40 @@ public class BlobService : IBlobService
         _blobServiceClient = blobServiceClient;
     }
 
-    public async Task<BlobItem> GetBlobAsync(string name)
+    public async Task<BlobDownloadResult> GetBlobAsync(string name)
     {
-        var containerClient = _blobServiceClient.GetBlobContainerClient("profilePictures");
+        var containerClient = _blobServiceClient.GetBlobContainerClient("profilepictures");
         var blobClient = containerClient.GetBlobClient(name);
-        var blobDownloadInfo = await blobClient.DownloadContentAsync();
-        var blobInfo = blobDownloadInfo.Value;
-        return new BlobItem();
+        var blobDownloadResult = await blobClient.DownloadContentAsync();
+        var blob = blobDownloadResult.Value;
+        return blob;
     }
-
-    public async Task DeleteBlobAsync(string name)
-    {
-        
-        throw new NotImplementedException();
-    }
-
 
     public async Task<List<string>> ListBlobAsync()
     {
-        throw new NotImplementedException();
+        var containerClient = _blobServiceClient.GetBlobContainerClient("profilepictures");
+        var items = new List<string>();
+        await foreach (var blobItem in containerClient.GetBlobsAsync())
+        {
+            items.Add(blobItem.Name);
+        }
+        return items;
     }
 
-    public async Task UploadFileBlobAsync(string filePath, string fileName)
+
+    public async Task UploadFileBlobAsync(string fileName, Stream fileStreamData, string fileType)
     {
-        throw new NotImplementedException();
+        var containerClient = _blobServiceClient.GetBlobContainerClient("profilepictures");
+        var blobClient = containerClient.GetBlobClient(fileName);
+        await blobClient.UploadAsync(fileStreamData, new BlobHttpHeaders { ContentType = fileType });
+
     }
 
-    public async Task UploadStreamBlobAsync(Stream stream, string fileName)
+    public async Task DeleteBlobAsync(string fileName)
     {
-        throw new NotImplementedException();
+        var containerClient = _blobServiceClient.GetBlobContainerClient("profilepictures");
+        var blobClient = containerClient.GetBlobClient(fileName);
+        await blobClient.DeleteIfExistsAsync();
     }
+
 }

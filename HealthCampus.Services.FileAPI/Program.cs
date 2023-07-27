@@ -1,5 +1,5 @@
 using Azure.Storage.Blobs;
-using HealthCampus.Services.FileAPI.Services;
+using HealthCampus.Services.AppFileAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton(x => new BlobServiceClient(builder.Configuration.GetConnectionString("AzureStorageAccount")));
+builder.Services.AddSingleton(x =>
+    new BlobServiceClient(builder.Configuration.GetConnectionString("AzureStorageAccount")));
 builder.Services.AddSingleton<IBlobService, BlobService>();
 
 

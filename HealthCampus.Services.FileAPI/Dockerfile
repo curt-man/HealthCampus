@@ -7,16 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["HealthCampus.Services.FileAPI/HealthCampus.Services.FileAPI.csproj", "HealthCampus.Services.FileAPI/"]
-RUN dotnet restore "HealthCampus.Services.FileAPI/HealthCampus.Services.FileAPI.csproj"
+COPY ["HealthCampus.Services.AppFileAPI/HealthCampus.Services.AppFileAPI.csproj", "HealthCampus.Services.AppFileAPI/"]
+RUN dotnet restore "HealthCampus.Services.AppFileAPI/HealthCampus.Services.AppFileAPI.csproj"
 COPY . .
-WORKDIR "/src/HealthCampus.Services.FileAPI"
-RUN dotnet build "HealthCampus.Services.FileAPI.csproj" -c Release -o /app/build
+WORKDIR "/src/HealthCampus.Services.AppFileAPI"
+RUN dotnet build "HealthCampus.Services.AppFileAPI.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "HealthCampus.Services.FileAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "HealthCampus.Services.AppFileAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "HealthCampus.Services.FileAPI.dll"]
+ENTRYPOINT ["dotnet", "HealthCampus.Services.AppFileAPI.dll"]

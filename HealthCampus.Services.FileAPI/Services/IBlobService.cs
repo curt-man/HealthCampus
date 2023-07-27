@@ -1,16 +1,14 @@
 ﻿using Azure.Storage.Blobs.Models;
 
-namespace HealthCampus.Services.FileAPI.Services
+namespace HealthCampus.Services.AppFileAPI.Services
 {
     public interface IBlobService
     {
-        public Task<BlobInfo> GetBlobAsync(string name);
+        public Task<BlobDownloadResult> GetBlobAsync(string name);
 
         public Task<List<string>> ListBlobAsync();
 
-        public Task UploadFileBlobAsync(string filePath, string fileName);
-
-        public Task UploadStreamBlobAsync(Stream stream, string fileName);
+        public Task UploadFileBlobAsync(string fileName, Stream fileStreamData, string fileType);
 
         public Task DeleteBlobAsync(string name);
     }
