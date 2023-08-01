@@ -1,5 +1,9 @@
+using AutoMapper;
 using Azure.Storage.Blobs;
+using HealthCampus.Services.AppFileAPI.Data;
 using HealthCampus.Services.AppFileAPI.Services;
+using HealthCampus.Services.AppFileAPI;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +14,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
+builder.Services.AddSingleton(mapper);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddDbContext<AppFileDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AppFileDatabase")));
 builder.Services.AddSingleton(x =>
     new BlobServiceClient(builder.Configuration.GetConnectionString("AzureStorageAccount")));
 builder.Services.AddSingleton<IBlobService, BlobService>();
@@ -31,3 +41,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
