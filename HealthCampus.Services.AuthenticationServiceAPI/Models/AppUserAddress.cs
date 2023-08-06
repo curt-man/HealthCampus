@@ -7,20 +7,30 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
     /// <summary>
     /// Model representing an address associated with a specific user.
     /// </summary>
-    [PrimaryKey("AddressId", "AppUserId")]
+    [PrimaryKey(nameof(AppUserId), nameof(AddressId))]
     public class AppUserAddress
     {
+        /// <summary>
+        /// The unique identifier of the user associated with this address.
+        /// </summary>
+        [Column(Order = 1)]
+        public Guid AppUserId { get; set; }
 
         /// <summary>
         /// Reference to the user associated with this address.
         /// </summary>
-        public virtual AppUser AppUser { get; set; }
+        public AppUser AppUser { get; set; }
 
+        /// <summary>
+        /// The unique identifier of the address.
+        /// </summary>
+        [Column(Order = 2)]
+        public Guid AddressId { get; set; }
 
         /// <summary>
         /// Reference to the address.
         /// </summary>
-        public virtual Address Address { get; set; }
+        public Address Address { get; set; }
 
         /// <summary>
         /// Flag indicating if this is the main address associated with the user.

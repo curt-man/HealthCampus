@@ -22,7 +22,6 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
         /// <summary>
         /// A collection of user language entities with a reference to their corresponding user and inverse property of "Language".
         /// </summary>
-        [InverseProperty("Language")]
         public ICollection<AppUserLanguage>? AppUsers { get; set; }
     }
 }

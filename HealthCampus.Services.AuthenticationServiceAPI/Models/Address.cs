@@ -42,7 +42,6 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
         /// <summary>
         /// Collection of users that use this address.
         /// </summary>
-        [InverseProperty("Address")]
         public ICollection<AppUserAddress>? AppUsers { get; set; }
     }
 }

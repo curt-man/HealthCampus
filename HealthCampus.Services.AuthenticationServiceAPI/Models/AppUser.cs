@@ -8,7 +8,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
     /// <summary>
     /// Model representing a user in the application.
     /// </summary>
-    public class AppUser : IdentityUser
+    public class AppUser : IdentityUser<Guid>
     {
         /// <summary>
         /// The first name of the user.
@@ -23,7 +23,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
         /// <summary>
         /// The second name of the user.
         /// </summary>
-        public string SecondName { get; set; }
+        public string? SecondName { get; set; }
 
         /// <summary>
         /// User's INN (ИНН - идентификационный номер налогоплательщика) is unique identifier of the person in Kyrgyzstan.
@@ -53,24 +53,22 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
         /// <summary>
         /// The unique identifier of user's profile picture.
         /// </summary>
+        [ForeignKey(nameof(ProfilePicture))]
         public Guid ProfilePictureId { get; set; }
 
         /// <summary>
         /// User's profile picture.
         /// </summary>
-        [ForeignKey("ProfilePictureId")]
-        public AppFile ProfilePicture { get; set; }
+        public AppFile? ProfilePicture { get; set; }
 
         /// <summary>
         /// User's addresses.
         /// </summary>
-        [InverseProperty("AppUser")]
         public ICollection<AppUserAddress>? Addresses { get; set; }
 
         /// <summary>
         /// User's languages.
         /// </summary>
-        [InverseProperty("AppUser")]
         public ICollection<AppUserLanguage>? Languages { get; set; }
 
         /// <summary>
