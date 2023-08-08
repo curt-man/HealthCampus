@@ -28,17 +28,19 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
         }
 
         private readonly IBlobService _blobService;
+        private readonly IMediaService _mediaService;
         private readonly AppFileDbContext _context;
         private readonly IMapper _mapper;
         private ILogger<AppFileController> _logger;
 
 
-        public AppFileController(IBlobService blobService, AppFileDbContext appFileDbContext, IMapper mapper, ILogger<AppFileController> logger)
+        public AppFileController(IBlobService blobService, AppFileDbContext appFileDbContext, IMapper mapper, ILogger<AppFileController> logger, IMediaService mediaService)
         {
             _blobService = blobService;
             _context = appFileDbContext;
             _mapper = mapper;
             _logger = logger;
+            _mediaService = mediaService;
         }
 
         [HttpGet("{fileId}")]
@@ -77,20 +79,6 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
         [Consumes("multipart/form-data")]
         public async Task<ResponseDto> UploadAppFile([FromForm] AppFileRequestDto request)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState
-                    .Select(p => p.Value.Errors) // Can be null?
-                    .Where(e => e.Count() > 0).ToArray();
-                string errorMessage = string.Empty;
-
-                for (int i = 0; i < errors.Length; i++)
-                {
-                    errorMessage += $"{i}. {errors[i]};{Environment.NewLine}";
-                }
-                throw new ArgumentException(nameof(ModelState), errorMessage);
-            }
-
             try
             {
                 // check if user exists
@@ -148,14 +136,14 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
                     {
                         using (var stream = file.OpenReadStream())
                         {
-                            int fileDuration = MediaService.GetMediaFileDuration(stream, _logger);
+                            int fileDuration = _mediaService.GetMediaFileDuration(stream, _logger);
                             appFile.Duration = fileDuration;
                         }
                     }
 
                     //if (fileContentType.MediaType == MediaType.Image)
                     //{
-                    //    using (Stream compressedImage = MediaService.CompressImage(file.OpenReadStream()))
+                    //    using (Stream compressedImage = _mediaService.CompressImage(file.OpenReadStream()))
                     //    {
                     //        await _blobService.UploadFileBlobAsync(appFileGuid.ToString(), compressedImage, file.ContentType, request.Container);
                     //        appFile.ThumbnailUrl = $"https://{request.StorageAccount}.blob.core.windows.net/{request.Container}/{appFileGuid}.thumbnail";
@@ -190,11 +178,6 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
             return _response;
         }
 
-
-        //public async Task<AppFile> uploadAppFile( AppFileRequestDto request)
-        //{
-
-        //}
 
 
     }

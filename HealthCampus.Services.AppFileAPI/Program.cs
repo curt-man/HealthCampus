@@ -23,6 +23,7 @@ builder.Services.AddDbContext<AppFileDbContext>(options =>
 builder.Services.AddSingleton(x =>
     new BlobServiceClient(builder.Configuration.GetConnectionString("AzureStorageAccount")));
 builder.Services.AddSingleton<IBlobService, BlobService>();
+builder.Services.AddSingleton<IMediaService, MediaService>();
 
 
 var app = builder.Build();

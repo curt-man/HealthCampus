@@ -4,13 +4,13 @@ using System.Drawing.Imaging;
 
 namespace HealthCampus.Services.AppFileAPI.Services
 {
-    public static class MediaService
+    public class MediaService : IMediaService
     {
-        public static int GetMediaFileDuration(Stream fileContentStream, ILogger logger)
+        public int GetMediaFileDuration(Stream fileContentStream, ILogger logger)
         {
             var file = new MediaInfoWrapper(fileContentStream, logger);
-            
-            if(!file.Success)
+
+            if (!file.Success)
             {
                 throw new ArgumentException("Media file is corrupted");
             }
@@ -19,7 +19,7 @@ namespace HealthCampus.Services.AppFileAPI.Services
             return duration;
         }
 
-        public static Stream CompressImage(Stream imageStream)
+        public Stream CompressImage(Stream imageStream)
         {
             // Load the image from the stream
             Image image = Image.FromStream(imageStream);

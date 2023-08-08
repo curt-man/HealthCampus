@@ -1,4 +1,6 @@
-﻿namespace HealthCampus.Services.AppFileAPI.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace HealthCampus.Services.AppFileAPI.Models
 {
     /// <summary>
     /// Represents a file content type.

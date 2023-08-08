@@ -26,7 +26,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
         public string? SecondName { get; set; }
 
         /// <summary>
-        /// User's INN (ИНН - идентификационный номер налогоплательщика) is unique identifier of the person in Kyrgyzstan.
+        /// User's INN (ИНН - идентификационный номер налогоплательщика) is unique identifier of a person in Kyrgyzstan.
         /// </summary>
         public long? UserINN { get; set; }
 
@@ -54,11 +54,12 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
         /// The unique identifier of user's profile picture.
         /// </summary>
         [ForeignKey(nameof(ProfilePicture))]
-        public Guid ProfilePictureId { get; set; }
+        public Guid? ProfilePictureId { get; set; }
 
         /// <summary>
         /// User's profile picture.
         /// </summary>
+        [NotMapped]
         public AppFile? ProfilePicture { get; set; }
 
         /// <summary>

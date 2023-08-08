@@ -22,87 +22,6 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("HealthCampus.Services.AppFileAPI.Models.AppFile", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("BlobContainer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte>("ContentTypeId")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("DownloadUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Duration")
-                        .HasColumnType("int");
-
-                    b.Property<bool?>("IsPublic")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModifiedByUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("OriginalName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Size")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ThumbnailUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UploadedByUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("UploadedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ContentTypeId");
-
-                    b.ToTable("AppFile");
-                });
-
-            modelBuilder.Entity("HealthCampus.Services.AppFileAPI.Models.FileContentType", b =>
-                {
-                    b.Property<byte>("Id")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Extension")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MediaType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SubType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FileContentType");
-                });
-
             modelBuilder.Entity("HealthCampus.Services.AuthenticationServiceAPI.Models.Address", b =>
                 {
                     b.Property<Guid>("Id")
@@ -230,8 +149,6 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("ProfilePictureId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -458,17 +375,6 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("HealthCampus.Services.AppFileAPI.Models.AppFile", b =>
-                {
-                    b.HasOne("HealthCampus.Services.AppFileAPI.Models.FileContentType", "ContentType")
-                        .WithMany()
-                        .HasForeignKey("ContentTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ContentType");
-                });
-
             modelBuilder.Entity("HealthCampus.Services.AuthenticationServiceAPI.Models.AppUser", b =>
                 {
                     b.HasOne("HealthCampus.Services.AuthenticationServiceAPI.Models.AppUserStatus", "AppUserStatus")
@@ -477,15 +383,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HealthCampus.Services.AppFileAPI.Models.AppFile", "ProfilePicture")
-                        .WithMany()
-                        .HasForeignKey("ProfilePictureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("AppUserStatus");
-
-                    b.Navigation("ProfilePicture");
                 });
 
             modelBuilder.Entity("HealthCampus.Services.AuthenticationServiceAPI.Models.AppUserAddress", b =>

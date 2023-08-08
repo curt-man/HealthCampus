@@ -11,7 +11,7 @@ namespace HealthCampus.Services.AppFileAPI.Models
     public class AppFile
     {
         /// <summary>
-        /// The unique identifier of the file, also a name.
+        /// The unique identifier of the file in database, also name of the file in Azure Blob Storage.
         /// </summary>
         [Key]
         public Guid Id { get; set; }
@@ -19,12 +19,14 @@ namespace HealthCampus.Services.AppFileAPI.Models
         /// The container in which the blob is stored.
         /// </summary>
         [Required]
+        [MaxLength(50)]
         public string BlobContainer { get; set; }
 
         /// <summary>
         /// The original name of the file.
         /// </summary>
         [Required]
+        [MaxLength(250)]
         public string OriginalName { get; set; }
 
         /// <summary>

@@ -13,7 +13,7 @@
         /// <summary>
         /// The status of the user.
         /// </summary>
-        public string Status { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// The description of the user status.
