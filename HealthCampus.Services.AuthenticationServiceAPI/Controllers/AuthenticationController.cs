@@ -3,6 +3,7 @@ using HealthCampus.CommonUtilities.Dto;
 using HealthCampus.Services.AuthenticationServiceAPI.Data;
 using HealthCampus.Services.AuthenticationServiceAPI.Models;
 using HealthCampus.Services.AuthenticationServiceAPI.Models.Dto;
+using HealthCampus.Services.AuthenticationServiceAPI.Services;
 using HealthCampus.Services.AuthenticationServiceAPI.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -33,33 +34,20 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Controllers
             _response.Message = message;
         }
 
-        private readonly JwtConfig _jwtConfig;
+        private readonly JwtService _jwtService;
         private readonly AuthenticationDbContext _dbContext;
         private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 
-        public AuthenticationController(IOptions<JwtConfig> jwtConfig, UserManager<AppUser> userManager, AuthenticationDbContext authenticationDbContext)
+        public AuthenticationController(UserManager<AppUser> userManager, AuthenticationDbContext authenticationDbContext, RoleManager<IdentityRole<Guid>> roleManager, JwtService jwtService)
         {
-            _jwtConfig = jwtConfig.Value;
             _userManager = userManager;
             _dbContext = authenticationDbContext;
+            _roleManager = roleManager;
             _response = new ResponseDto();
+            _jwtService = jwtService;
         }
 
-        [HttpGet]
-        [Route("GetUsers")]
-        public async Task<ActionResult<ResponseDto>> GetAllUsersAsync()
-        {
-            try
-            {
-                var users = await _userManager.Users.ToListAsync();
-                _response.Result = users;
-            }
-            catch (Exception ex)
-            {
-                SetErrorMessageToResponse(ex.Message);
-            }
-            return Ok(_response);
-        }
 
         [HttpGet]
         [Route("GetLanguages")]
@@ -97,6 +85,10 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Controllers
                     RegistrationDate = DateTime.UtcNow
                 };
 
+                if (!(await _roleManager.RoleExistsAsync(request.AppRole)))
+                {
+                    throw new ArgumentException(request.AppRole);
+                }
                 var result = await _userManager.CreateAsync(user, request.Password);
                 if (!result.Succeeded)
                 {
@@ -120,7 +112,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Controllers
                 }
                 _response.Result = user;
 
-                var jwtToken = GenerateJwtToken(user);
+                var jwtToken = _jwtService.GenerateJwtToken(user);
                 _response.Message = jwtToken;
 
             }
@@ -131,55 +123,31 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Controllers
             return Ok(_response);
         }
 
-        [NonAction]
-        private string GenerateJwtToken(AppUser user)
+
+
+        [HttpPost("login")]
+        public async Task<ResponseDto> LoginAsync([FromBody] AppUserLoginRequestDto request)
         {
-            var jwtHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtConfig.SecretKey);
-            var listOfClaims = new List<Claim>()
+            try
             {
-                new Claim("Id", user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Name, $"{user.FirstName} {user.LastName}"),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                new Claim(JwtRegisteredClaimNames.Iss, _jwtConfig.Issuer),
-                new Claim(JwtRegisteredClaimNames.Aud, _jwtConfig.Audience),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-            };
-            var tokenDescriptor = new SecurityTokenDescriptor()
+                var result = await _signInManager.PasswordSignInAsync(userLoginDto.Email, userLoginDto.Password, false, false);
+
+                if (!result.Succeeded)
+                {
+                    SetErrorMessageToResponse("Invalid login attempt!");
+                }
+                else
+                {
+                    _response.IsSuccess = true;
+                    _response.Result = "User logged in successfully!";
+                }
+            }
+            catch (Exception ex)
             {
-                Subject = new ClaimsIdentity(listOfClaims),
-                Expires = DateTime.UtcNow.Add(_jwtConfig.ExpirationTime),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var securityToken = jwtHandler.CreateToken(tokenDescriptor);
-            var jwt = jwtHandler.WriteToken(securityToken);
-            return jwt;
+                SetErrorMessageToResponse(ex.Message);
+            }
+            return _response;
         }
-
-
-        //[HttpPost("login")]
-        //public async Task<ResponseDto> LoginAsync([FromBody] UserLoginDto userLoginDto)
-        //{
-        //    try
-        //    {
-        //        var result = await _signInManager.PasswordSignInAsync(userLoginDto.Email, userLoginDto.Password, false, false);
-
-        //        if (!result.Succeeded)
-        //        {
-        //            SetErrorMessageToResponse("Invalid login attempt!");
-        //        }
-        //        else
-        //        {
-        //            _response.IsSuccess = true;
-        //            _response.Result = "User logged in successfully!";
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        SetErrorMessageToResponse(ex.Message);
-        //    }
-        //    return _response;
-        //}
 
         //[HttpPost("logout")]
         //public async Task<ResponseDto> LogoutAsync()

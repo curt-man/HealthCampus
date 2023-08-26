@@ -89,7 +89,7 @@ async Task SeedDatabase()
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
         var seeder = new Seeder(dbContext, roleManager, userManager);
-
+        
         await seeder.SeedData();
             
     }
