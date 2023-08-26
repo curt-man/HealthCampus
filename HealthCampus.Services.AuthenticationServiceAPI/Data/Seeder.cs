@@ -20,7 +20,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Data
             _userManager = userManager;
         }
 
-        public void SeedLanguages()
+        private void SeedLanguages()
         {
             if (_context.Languages.Any())
             {
@@ -64,7 +64,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Data
             _context.SaveChanges();
         }
 
-        public void SeedProficiencies()
+        private void SeedProficiencies()
         {
             if (_context.Proficiencies.Any())
             {
@@ -80,7 +80,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Data
             _context.SaveChanges();
         }
 
-        public void SeedGenders()
+        private void SeedGenders()
         {
             if (_context.Genders.Any())
             {
@@ -96,18 +96,18 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Data
             _context.SaveChanges();
         }
 
-        //public void SeedAppUserStatuses()
-        //{
-        //    _context.AppUserStatuses.AddRange(
-        //        new AppUserStatus { Name = "Active", Description = "The Active status indicates that the user is currently engaged with the application and has unrestricted access to all features and functionalities." },
-        //        new AppUserStatus { Name = "Inactive", Description = "The Inactive status signifies that the user is not currently engaged with the application." },
-        //        new AppUserStatus { Name = "Busy", Description = "The Busy status is used to indicate that the user is currently occupied and might not be able to engage with the application immediately." },
-        //        new AppUserStatus { Name = "Deleted", Description = "The Deleted status represents that the user's account and associated data have been removed from the application." }
-        //    );
-        //    _context.SaveChanges();
-        //}
+        private void SeedUserStatuses()
+        {
+            _context.UserStatuses.AddRange(
+                new UserStatus { Name = "Active", Description = "The Active status indicates that the user is currently engaged with the application and has unrestricted access to all features and functionalities." },
+                new UserStatus { Name = "Inactive", Description = "The Inactive status signifies that the user is not currently engaged with the application." },
+                new UserStatus { Name = "Banned", Description = "This Banned status indicates that the user is banned. Ban can be permanent or temporary." },
+                new UserStatus { Name = "Deleted", Description = "The Deleted status represents that the user's account and associated data have been removed from the application." }
+            );
+            _context.SaveChanges();
+        }
 
-        public async Task SeedRolesAsync()
+        private async Task SeedRolesAsync()
         {
             if (!_roleManager.Roles.Any())
             {
@@ -126,7 +126,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Data
             }
         }
 
-        public void SeedAddresses()
+        private void SeedAddresses()
         {
             if (_context.Addresses.Any())
             {
@@ -159,7 +159,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Data
         }
 
 
-        public async Task SeedUsersAsync()
+        private async Task SeedUsersAsync()
         {
 
             if (!_userManager.Users.Any())
@@ -248,7 +248,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Data
                         PhoneNumber = "+996555112233",
                         UserName = "eldar.jenishovich@gmail.com"
                     },
-                    
+
                     new AppUser
                     {
                         FirstName = "Aibek",
@@ -260,9 +260,9 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Data
                         PhoneNumber = "+996700123456",
                         UserName = "aibek.bakytovich@gmail.com"
                     },
-                    
-                    
-                    
+
+
+
                     new AppUser
                     {
                         FirstName = "Aliya",
@@ -352,7 +352,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Data
             }
         }
 
-        public void SeedAppUsersAddresses()
+        private void SeedAppUsersAddresses()
         {
             if (_context.AppUsersAddresses.Any())
             {
@@ -389,7 +389,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Data
         }
 
 
-        public void SeedAppUsersLanguages()
+        private void SeedAppUsersLanguages()
         {
             if (_context.AppUsersLanguages.Any())
             {
@@ -450,17 +450,44 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Data
             _context.SaveChanges();
         }
 
+        private void SeedAppUsersUserStatuses()
+        {
+            if (_context.AppUsersUserStatuses.Any())
+            {
+                return;
+            }
+            List<Guid> appUsers = _context.AppUsers.Select(x => x.Id).ToList();
+
+            List<byte> userStatuses = _context.UserStatuses.Select(x => x.Id).ToList();
+
+            for (int i = 0; i < appUsers.Count; i++)
+            {
+                _context.AppUsersUserStatuses.Add(
+                    new AppUserUserStatus()
+                    {
+                        AppUserId = appUsers[i],
+                        UserStatusId = userStatuses[_random.Next(0, userStatuses.Count)],
+                        LastTimeOnlineDate = DateTime.UtcNow.AddDays(-i/3)
+                    }
+                );
+            }
+
+            _context.SaveChanges();
+        }
+
 
         public async Task SeedData()
         {
             SeedGenders();
             SeedLanguages();
             SeedProficiencies();
+            SeedUserStatuses();
+            SeedAddresses();
             await SeedRolesAsync();
             await SeedUsersAsync();
-            SeedAddresses();
             SeedAppUsersLanguages();
             SeedAppUsersAddresses();
+            SeedAppUsersUserStatuses();
         }
 
         Stack<int> getRandomNumberStack(int minValue, int maxValue)

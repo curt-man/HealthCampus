@@ -60,11 +60,6 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
         public DateTime? ModifiedDate { get; set; }
 
         /// <summary>
-        /// The last date when the user was modified.
-        /// </summary>
-        public DateTime? LastTimeOnlineDate { get; set; }
-
-        /// <summary>
         /// The unique identifier of user's profile picture.
         /// </summary>
         public Guid? ProfilePictureId { get; set; }

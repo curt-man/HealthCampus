@@ -20,6 +20,8 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Data
         public DbSet<Language> Languages { get; set; }
         public DbSet<Proficiency> Proficiencies { get; set; }
         public DbSet<Gender> Genders { get; set; }
+        public DbSet<UserStatus> UserStatuses { get; set; }
+        public DbSet<AppUserUserStatus> AppUsersUserStatuses { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
