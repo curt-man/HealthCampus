@@ -1,41 +1,96 @@
+using AutoMapper;
 using HealthCampus.Services.AuthenticationServiceAPI.Data;
 using HealthCampus.Services.AuthenticationServiceAPI.Models;
+using HealthCampus.Services.AuthenticationServiceAPI.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Writers;
 
+// Adding Services
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+#region Configuring Database
+
 builder.Services.AddDbContext<AuthenticationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("AuthenticationDatabase"));
 });
-//builder.Services.AddIdentity<AppUser, IdentityRole>()
-//    .AddEntityFrameworkStores<AuthenticationDbContext>()
-//    .AddDefaultTokenProviders();
+builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedPhoneNumber = false;
+    options.User.RequireUniqueEmail = true;
+})
+    .AddEntityFrameworkStores<AuthenticationDbContext>()
+    .AddDefaultTokenProviders();
 
-//builder.Services.AddIdentityCore<AppUser>(options => options.SignIn.RequireConfirmedAccount = true)
-//        .AddEntityFrameworkStores<AuthenticationDbContext>();
+#endregion
 
+#region Configuring AutoMapper
+
+IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
+builder.Services.AddSingleton(mapper);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+#endregion
+
+builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen();
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+
+// 
 var app = builder.Build();
+
+await SeedDatabase();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
 
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
+
+async Task SeedDatabase()
+{
+    using(var scope = app.Services.CreateScope())
+    {
+
+        var dbContext = scope.ServiceProvider.GetRequiredService<AuthenticationDbContext>();
+        if (dbContext.Database.GetPendingMigrations().Count() > 0)
+        {
+            dbContext.Database.Migrate();
+        }
+
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+
+        var seeder = new Seeder(dbContext, roleManager, userManager);
+
+        await seeder.SeedData();
+            
+    }
+}

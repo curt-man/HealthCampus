@@ -1,6 +1,6 @@
 ﻿namespace HealthCampus.Services.AuthenticationServiceAPI.Utilities
 {
-    public class JwtOptions
+    public class JwtConfig
     {
         /// <summary>
         /// The secret key used to sign the JWT token.
@@ -15,11 +15,11 @@
         /// <summary>
         /// The audience of the JWT token.
         /// </summary>
-        public string? Audience { get; set; }
+        public string Audience { get; set; }
 
         /// <summary>
         /// The expiration time of the JWT token.
         /// </summary>
-        public int ExpirationTime { get; set; }
+        public TimeSpan ExpirationTime { get; set; }
     }
 }
