@@ -25,7 +25,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
         /// The unique identifier of the language.
         /// </summary>
         [Column(Order = 2)]
-        public int LanguageId { get; set; }
+        public byte LanguageId { get; set; }
 
         /// <summary>
         /// Reference to the language.
@@ -33,14 +33,14 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
         public Language? Language { get; set; }
 
         /// <summary>
-        /// The proficiency level of the user in the language.
-        /// </summary>
-        public Proficiency Proficiency { get; set; }
-
-        /// <summary>
         /// The unique identifier of the language proficiency.
         /// </summary>
         [ForeignKey(nameof(Proficiency))]
         public byte ProficiencyId { get; set; }
+
+        /// <summary>
+        /// The proficiency level of the user in the language.
+        /// </summary>
+        public Proficiency? Proficiency { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HealthCampus.Services.AuthenticationServiceAPI.Models
 {
@@ -10,12 +11,13 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
         /// <summary>
         /// Unique identifier for a user's language proficiency.
         /// </summary>
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public byte Id { get; set; }
 
         /// <summary>
         /// Name of the proficiency level.
         /// </summary>
+        [MaxLength(100)]
         public string Name { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
         /// <summary>
         /// Reference to the user associated with this address.
         /// </summary>
-        public AppUser AppUser { get; set; }
+        public AppUser? AppUser { get; set; }
 
         /// <summary>
         /// The unique identifier of the address.
@@ -30,7 +30,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
         /// <summary>
         /// Reference to the address.
         /// </summary>
-        public Address Address { get; set; }
+        public Address? Address { get; set; }
 
         /// <summary>
         /// Flag indicating if this is the main address associated with the user.

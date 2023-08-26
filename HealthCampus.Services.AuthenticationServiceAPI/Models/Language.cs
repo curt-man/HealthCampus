@@ -11,12 +11,13 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
         /// <summary>
         /// Primary key of the language.
         /// </summary>
-        [Key]
-        public int Id { get; set; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public byte Id { get; set; }
 
         /// <summary>
         /// The name of the language.
         /// </summary>
+        [MaxLength(100)]
         public string Name { get; set; }
 
         /// <summary>

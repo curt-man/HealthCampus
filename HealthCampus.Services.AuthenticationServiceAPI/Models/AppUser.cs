@@ -13,32 +13,41 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
         /// <summary>
         /// The first name of the user.
         /// </summary>
+        [Required]
+        [MaxLength(30)]
         public string FirstName { get; set; }
 
         /// <summary>
         /// The last name of the user.
         /// </summary>
+        [Required]
+        [MaxLength(30)]
         public string LastName { get; set; }
 
         /// <summary>
         /// The second name of the user.
         /// </summary>
+        [MaxLength(30)]
         public string? SecondName { get; set; }
 
         /// <summary>
         /// User's INN (ИНН - идентификационный номер налогоплательщика) is unique identifier of a person in Kyrgyzstan.
         /// </summary>
+        [StringLength(14)]
         public long? UserINN { get; set; }
 
         /// <summary>
         /// The date of birth of the user.
         /// </summary>
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
 
         /// <summary>
-        /// The sex of the user.
+        /// The gender of the user.
         /// </summary>
-        public byte Sex { get; set; }
+        public byte? GenderId { get; set; }
+
+        [ForeignKey(nameof(GenderId))]
+        public Gender? Gender { get; set; }
 
         /// <summary>
         /// The date of registration of the user.
@@ -48,19 +57,17 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
         /// <summary>
         /// The last date when the user was modified.
         /// </summary>
-        public DateTime ModifiedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+
+        /// <summary>
+        /// The last date when the user was modified.
+        /// </summary>
+        public DateTime? LastTimeOnlineDate { get; set; }
 
         /// <summary>
         /// The unique identifier of user's profile picture.
         /// </summary>
-        [ForeignKey(nameof(ProfilePicture))]
         public Guid? ProfilePictureId { get; set; }
-
-        /// <summary>
-        /// User's profile picture.
-        /// </summary>
-        [NotMapped]
-        public AppFile? ProfilePicture { get; set; }
 
         /// <summary>
         /// User's addresses.
@@ -72,15 +79,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Models
         /// </summary>
         public ICollection<AppUserLanguage>? Languages { get; set; }
 
-        /// <summary>
-        /// The identifier of user's status.
-        /// </summary>
-        public byte AppUserStatusId { get; set; }
-
-        /// <summary>
-        /// The status of the user.
-        /// </summary>
-        public AppUserStatus? AppUserStatus { get; set; }
+        
 
     }
 }
