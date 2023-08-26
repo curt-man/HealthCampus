@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Azure.Core;
+using HealthCampus.CommonUtilities.Dto;
 using HealthCampus.Services.AppFileAPI.Data;
 using HealthCampus.Services.AppFileAPI.Models.Dto;
 using HealthCampus.Services.AppFileAPI.Services;
@@ -12,8 +13,15 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
     [ApiController]
     public class FileController : ControllerBase
     {
+        private ResponseDto response = new ResponseDto();
+
+        private void SetErrorMessageToResponse(string message)
+        {
+            response.IsSuccess = false;
+            response.Message = message;
+        }
+
         private readonly IBlobService _blobService;
-        private ResponseDto _response = new();
         private readonly AppFileDbContext _context;
         private readonly IMapper _mapper;
 
@@ -30,14 +38,13 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
             try
             {
                 var blob = await _blobService.GetBlobAsync(request.BlobName.ToString()!, request.Container);
-                _response.Result = File(blob.Content.ToArray(), blob.Details.ContentType);
+                response.Result = File(blob.Content.ToArray(), blob.Details.ContentType);
             }
             catch (Exception ex)
             {
-                _response.IsSuccess = false;
-                _response.Message = ex.Message;
+                SetErrorMessageToResponse(ex.Message);
             }
-            return _response;
+            return response;
         }
 
 

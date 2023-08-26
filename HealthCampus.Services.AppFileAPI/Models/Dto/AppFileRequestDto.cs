@@ -1,4 +1,5 @@
-﻿using HealthCampus.Services.AppFileAPI.Utilities;
+﻿using HealthCampus.CommonUtilities;
+using HealthCampus.Services.AppFileAPI.Utilities;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -14,7 +15,7 @@ namespace HealthCampus.Services.AppFileAPI.Models.Dto
         public string Container { get; set; }
         public Guid? BlobName { get; set; }
         [Required]
-        [MaxFileSize(1024*10)]
+        [MaxFileSize(1024 * 10)]
         public IFormFile FormFile { get; set; }
 
     }

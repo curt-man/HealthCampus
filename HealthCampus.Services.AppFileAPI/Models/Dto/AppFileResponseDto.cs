@@ -6,9 +6,13 @@ namespace HealthCampus.Services.AppFileAPI.Models.Dto
     public class AppFileResponseDto
     {
         /// <summary>
+        /// The unique identifier of the file in database, also name of the file in Azure Blob Storage.
+        /// </summary>
+        public Guid Id { get; set; }
+
+        /// <summary>
         /// The original name of the file.
         /// </summary>
-        [Required]
         public string OriginalName { get; set; }
 
         /// <summary>
@@ -19,7 +23,6 @@ namespace HealthCampus.Services.AppFileAPI.Models.Dto
         /// <summary>
         /// The file size in kilobytes.
         /// </summary>
-        [Required]
         public int Size { get; set; }
 
         /// <summary>
@@ -30,7 +33,6 @@ namespace HealthCampus.Services.AppFileAPI.Models.Dto
         /// <summary>
         /// The publicly accessible URL of the file.
         /// </summary>
-        [Required]
         public string Url { get; set; }
 
         /// <summary>
@@ -42,6 +44,7 @@ namespace HealthCampus.Services.AppFileAPI.Models.Dto
         /// The url of the thumbnail of the file (if applicable).
         /// </summary>
         public string? ThumbnailUrl { get; set; }
+
 
     }
 }

@@ -12,6 +12,7 @@ using System.Drawing;
 using System.IO.Compression;
 using HealthCampus.Services.AppFileAPI.Utilities;
 using static System.Net.WebRequestMethods;
+using HealthCampus.CommonUtilities.Dto;
 
 namespace HealthCampus.Services.AppFileAPI.Controllers
 {
@@ -19,12 +20,12 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
     [ApiController]
     public class AppFileController : ControllerBase
     {
-        private ResponseDto _response = new ResponseDto();
+        private ResponseDto response = new ResponseDto();
 
         private void SetErrorMessageToResponse(string message)
         {
-            _response.IsSuccess = false;
-            _response.Message = message;
+            response.IsSuccess = false;
+            response.Message = message;
         }
 
         private readonly IBlobService _blobService;
@@ -50,13 +51,13 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
             {
                 var appFile = await _context.AppFiles.FirstOrDefaultAsync(x => x.Id.ToString() == fileId);
 
-                _response.Result = _mapper.Map<AppFileResponseDto>(appFile);
+                response.Result = _mapper.Map<AppFileResponseDto>(appFile);
             }
             catch (Exception ex)
             {
                 SetErrorMessageToResponse(ex.Message);
             }
-            return _response;
+            return response;
         }
 
         [HttpGet("list")]
@@ -65,13 +66,13 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
             try
             {
                 var appFiles = await _context.AppFiles.ToListAsync();
-                _response.Result = _mapper.Map<AppFileResponseDto>(appFiles);
+                response.Result = _mapper.Map<IEnumerable<AppFileResponseDto>>(appFiles);
             }
             catch (Exception ex)
             {
                 SetErrorMessageToResponse(ex.Message);
             }
-            return _response;
+            return response;
         }
 
 
@@ -168,14 +169,14 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
                     }
                     await _context.SaveChangesAsync();
 
-                    _response.Result = appFile;
+                    response.Result = appFile;
                 }
             }
             catch (Exception ex)
             {
                 SetErrorMessageToResponse(ex.Message);
             }
-            return _response;
+            return response;
         }
 
 

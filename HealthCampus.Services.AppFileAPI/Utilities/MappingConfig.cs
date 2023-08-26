@@ -2,7 +2,7 @@
 using HealthCampus.Services.AppFileAPI.Models;
 using HealthCampus.Services.AppFileAPI.Models.Dto;
 
-namespace HealthCampus.Services.AppFileAPI
+namespace HealthCampus.Services.AppFileAPI.Utilities
 {
     public class MappingConfig
     {
@@ -10,8 +10,6 @@ namespace HealthCampus.Services.AppFileAPI
         {
             var mappingConfig = new MapperConfiguration(config =>
             {
-                config.CreateMap<AppFile, AppFileRequestDto>();
-                config.CreateMap<AppFileRequestDto, AppFile>();
                 config.CreateMap<AppFile, AppFileResponseDto>();
                 config.CreateMap<AppFileResponseDto, AppFile>();
             });
