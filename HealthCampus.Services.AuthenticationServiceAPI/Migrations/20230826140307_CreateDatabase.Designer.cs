@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HealthCampus.Services.AuthenticationServiceAPI.Migrations
 {
     [DbContext(typeof(AuthenticationDbContext))]
-    [Migration("20230807080125_CreateDatabaseWithAllRequiredTables")]
-    partial class CreateDatabaseWithAllRequiredTables
+    [Migration("20230826140307_CreateDatabase")]
+    partial class CreateDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.9")
+                .HasAnnotation("ProductVersion", "7.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -33,23 +33,28 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Migrations
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("FlatNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("HouseNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Street")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("ZipCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
 
                     b.HasKey("Id");
 
@@ -65,10 +70,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<byte>("AppUserStatusId")
-                        .HasColumnType("tinyint");
-
-                    b.Property<DateTime>("BirthDate")
+                    b.Property<DateTime?>("BirthDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -84,11 +86,19 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<byte?>("GenderId")
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<DateTime?>("LastTimeOnlineDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -96,7 +106,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<DateTime>("ModifiedDate")
+                    b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("NormalizedEmail")
@@ -116,25 +126,24 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("ProfilePictureId")
+                    b.Property<Guid?>("ProfilePictureId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("SecondName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte>("Sex")
-                        .HasColumnType("tinyint");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
                     b.Property<long?>("UserINN")
+                        .HasMaxLength(14)
                         .HasColumnType("bigint");
 
                     b.Property<string>("UserName")
@@ -143,7 +152,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserStatusId");
+                    b.HasIndex("GenderId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -182,8 +191,8 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnOrder(1);
 
-                    b.Property<int>("LanguageId")
-                        .HasColumnType("int")
+                    b.Property<byte>("LanguageId")
+                        .HasColumnType("tinyint")
                         .HasColumnOrder(2);
 
                     b.Property<byte>("ProficiencyId")
@@ -198,35 +207,38 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Migrations
                     b.ToTable("AppUsersLanguages");
                 });
 
-            modelBuilder.Entity("HealthCampus.Services.AuthenticationServiceAPI.Models.AppUserStatus", b =>
+            modelBuilder.Entity("HealthCampus.Services.AuthenticationServiceAPI.Models.Gender", b =>
                 {
                     b.Property<byte>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<byte>("Id"));
+
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Status")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppUserStatuses");
+                    b.ToTable("Genders");
                 });
 
             modelBuilder.Entity("HealthCampus.Services.AuthenticationServiceAPI.Models.Language", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<byte>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("tinyint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<byte>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -236,11 +248,15 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Migrations
             modelBuilder.Entity("HealthCampus.Services.AuthenticationServiceAPI.Models.Proficiency", b =>
                 {
                     b.Property<byte>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<byte>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -380,13 +396,11 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Migrations
 
             modelBuilder.Entity("HealthCampus.Services.AuthenticationServiceAPI.Models.AppUser", b =>
                 {
-                    b.HasOne("HealthCampus.Services.AuthenticationServiceAPI.Models.AppUserStatus", "AppUserStatus")
+                    b.HasOne("HealthCampus.Services.AuthenticationServiceAPI.Models.Gender", "Gender")
                         .WithMany()
-                        .HasForeignKey("AppUserStatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GenderId");
 
-                    b.Navigation("AppUserStatus");
+                    b.Navigation("Gender");
                 });
 
             modelBuilder.Entity("HealthCampus.Services.AuthenticationServiceAPI.Models.AppUserAddress", b =>
