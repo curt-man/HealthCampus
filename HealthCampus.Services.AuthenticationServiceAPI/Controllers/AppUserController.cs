@@ -2,6 +2,7 @@
 using HealthCampus.CommonUtilities.Dto;
 using HealthCampus.Services.AuthenticationServiceAPI.Data;
 using HealthCampus.Services.AuthenticationServiceAPI.Models;
+using HealthCampus.Services.AuthenticationServiceAPI.Models.Dto;
 using HealthCampus.Services.AuthenticationServiceAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -42,6 +43,58 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Controllers
             {
                 var users = await _userManager.Users.ToListAsync();
                 _response.Result = users;
+            }
+            catch (Exception ex)
+            {
+                SetErrorMessageToResponse(ex.Message);
+            }
+            return Ok(_response);
+        }
+
+        [HttpPost]
+        [Route("AddUser")]
+        public async Task<ActionResult<ResponseDto>> RegisterAsync([FromBody] AdminRegistrationRequestDto request)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(request.EmailAddress);
+                if (user != null)
+                {
+                    throw new Exception("User already exists!");
+                }
+                user = new AppUser()
+                {
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    Email = request.EmailAddress,
+                    UserName = request.EmailAddress,
+                    RegistrationDate = DateTime.UtcNow
+                };
+
+                var result = await _userManager.CreateAsync(user, request.Password);
+                if (!result.Succeeded)
+                {
+                    string errors = string.Empty;
+                    foreach (var error in result.Errors)
+                    {
+                        errors += error.Description + Environment.NewLine;
+                    }
+                    throw new ArgumentException(errors);
+                }
+
+                result = await _userManager.AddToRoleAsync(user, request.AppRole);
+                if (!result.Succeeded)
+                {
+                    string errors = string.Empty;
+                    foreach (var error in result.Errors)
+                    {
+                        errors += error.Description + Environment.NewLine;
+                    }
+                    throw new ArgumentException(errors);
+                }
+                _response.Result = user;
+
+
             }
             catch (Exception ex)
             {

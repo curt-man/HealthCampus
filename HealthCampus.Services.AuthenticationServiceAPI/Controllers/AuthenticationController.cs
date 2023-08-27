@@ -1,24 +1,11 @@
-﻿using AutoMapper;
-using HealthCampus.CommonUtilities.Dto;
+﻿using HealthCampus.CommonUtilities.Dto;
+using HealthCampus.CommonUtilities.Utilities;
 using HealthCampus.Services.AuthenticationServiceAPI.Data;
 using HealthCampus.Services.AuthenticationServiceAPI.Models;
 using HealthCampus.Services.AuthenticationServiceAPI.Models.Dto;
 using HealthCampus.Services.AuthenticationServiceAPI.Services;
-using HealthCampus.Services.AuthenticationServiceAPI.Utilities;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using NAudio.SoundFont;
-using System.Drawing.Text;
-using System.IdentityModel.Tokens.Jwt;
-using System.Net.NetworkInformation;
-using System.Security.Claims;
-using System.Text;
-using System.Xml;
 
 namespace HealthCampus.Services.AuthenticationServiceAPI.Controllers
 {
@@ -38,31 +25,16 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Controllers
         private readonly AuthenticationDbContext _dbContext;
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public AuthenticationController(UserManager<AppUser> userManager, AuthenticationDbContext authenticationDbContext, RoleManager<IdentityRole<Guid>> roleManager, JwtService jwtService)
+        public AuthenticationController(UserManager<AppUser> userManager, AuthenticationDbContext authenticationDbContext, RoleManager<IdentityRole<Guid>> roleManager, JwtService jwtService, SignInManager<AppUser> signInManager)
         {
             _userManager = userManager;
             _dbContext = authenticationDbContext;
             _roleManager = roleManager;
-            _response = new ResponseDto();
             _jwtService = jwtService;
-        }
-
-
-        [HttpGet]
-        [Route("GetLanguages")]
-        public async Task<ActionResult<ResponseDto>> GetLanguagesAsync()
-        {
-            try
-            {
-                var languages = await _dbContext.Languages.ToListAsync();
-                _response.Result = languages;
-            }
-            catch (Exception ex)
-            {
-                SetErrorMessageToResponse(ex.Message);
-            }
-            return Ok(_response);
+            _signInManager = signInManager;
+            _response = new ResponseDto();
         }
 
         [HttpPost]
@@ -85,10 +57,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Controllers
                     RegistrationDate = DateTime.UtcNow
                 };
 
-                if (!(await _roleManager.RoleExistsAsync(request.AppRole)))
-                {
-                    throw new ArgumentException(request.AppRole);
-                }
+
                 var result = await _userManager.CreateAsync(user, request.Password);
                 if (!result.Succeeded)
                 {
@@ -100,7 +69,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Controllers
                     throw new ArgumentException(errors);
                 }
 
-                result = await _userManager.AddToRoleAsync(user, request.AppRole);
+                result = await _userManager.AddToRoleAsync(user, RolesAndPasswords.User.Role);
                 if (!result.Succeeded)
                 {
                     string errors = string.Empty;
@@ -125,22 +94,37 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Controllers
 
 
 
-        [HttpPost("login")]
+        [HttpPost("Login")]
         public async Task<ResponseDto> LoginAsync([FromBody] AppUserLoginRequestDto request)
         {
             try
             {
-                var result = await _signInManager.PasswordSignInAsync(userLoginDto.Email, userLoginDto.Password, false, false);
-
-                if (!result.Succeeded)
+                AppUser user;
+                if (request.EmailOrUsername.Contains("@"))
                 {
-                    SetErrorMessageToResponse("Invalid login attempt!");
+                    user = await _userManager.FindByEmailAsync(request.EmailOrUsername);
                 }
                 else
                 {
-                    _response.IsSuccess = true;
-                    _response.Result = "User logged in successfully!";
+                    user = await _userManager.FindByNameAsync(request.EmailOrUsername);
                 }
+                if (user == null)
+                {
+                    throw new Exception("Invalid credentials");
+                }
+
+                var isPasswordIsValid = await _userManager.CheckPasswordAsync(user, request.Password);
+
+                if (!isPasswordIsValid)
+                {
+                    throw new Exception("Invalid credentials");
+                }
+
+                //for development
+                _response.Result = user;
+
+                var jwtToken = _jwtService.GenerateJwtToken(user);
+                _response.Message = jwtToken;
             }
             catch (Exception ex)
             {
@@ -149,20 +133,5 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Controllers
             return _response;
         }
 
-        //[HttpPost("logout")]
-        //public async Task<ResponseDto> LogoutAsync()
-        //{
-        //    try
-        //    {
-        //        await _signInManager.SignOutAsync();
-        //        _response.IsSuccess = true;
-        //        _response.Result = "User logged out successfully!";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        SetErrorMessageToResponse(ex.Message);
-        //    }
-        //    return _response;
-        //}
     }
 }

@@ -1,6 +1,5 @@
 ﻿using HealthCampus.CommonUtilities.Dto;
 using HealthCampus.Services.AuthenticationServiceAPI.Data;
-using HealthCampus.Services.AuthenticationServiceAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +8,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GenderController : ControllerBase
+    public class ProficiencyController : ControllerBase
     {
         private readonly ResponseDto _response;
 
@@ -21,7 +20,7 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Controllers
 
         private readonly AuthenticationDbContext _dbContext;
 
-        public GenderController(AuthenticationDbContext authenticationDbContext)
+        public ProficiencyController(AuthenticationDbContext authenticationDbContext)
         {
             _dbContext = authenticationDbContext;
             _response = new ResponseDto();
@@ -29,13 +28,13 @@ namespace HealthCampus.Services.AuthenticationServiceAPI.Controllers
 
 
         [HttpGet]
-        [Route("GetGenders")]
-        public async Task<ActionResult<ResponseDto>> GetGendersAsync()
+        [Route("GetProficiencies")]
+        public async Task<ActionResult<ResponseDto>> GetProficienciesAsync()
         {
             try
             {
-                var genders = await _dbContext.Genders.ToListAsync();
-                _response.Result = genders;
+                var proficiencies = await _dbContext.Proficiencies.ToListAsync();
+                _response.Result = proficiencies;
             }
             catch (Exception ex)
             {
