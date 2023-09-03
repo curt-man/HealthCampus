@@ -95,19 +95,20 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
 
                 else
                 {
-                    Guid appFileGuid = request!.BlobName ?? Guid.NewGuid();
-
+                    Guid appFileGuid;
                     if (request!.BlobName == null)
                     {
+                        appFileGuid = Guid.NewGuid();
                         appFile = new AppFile()
                         {
                             Id = appFileGuid,
-                            UploadedDate = DateTime.UtcNow,
+                            UploadedAt = DateTime.UtcNow,
                             UploadedByUserId = request.UserId
                         };
                     }
                     else
                     {
+                        appFileGuid = (Guid)(request!.BlobName);
                         appFile = await _context.AppFiles.FirstOrDefaultAsync(x =>
                             x.Id == request!.BlobName);
 
@@ -117,7 +118,7 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
                         }
                         else
                         {
-                            appFile.ModifiedDate = DateTime.UtcNow;
+                            appFile.ModifiedAt = DateTime.UtcNow;
                             appFile.ModifiedByUserId = request.UserId;
                         }
 

@@ -1,4 +1,5 @@
 ﻿using HealthCampus.CommonUtilities;
+using HealthCampus.CommonUtilities.Attributes;
 using HealthCampus.Services.AppFileAPI.Utilities;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;

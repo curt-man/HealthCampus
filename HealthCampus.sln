@@ -14,12 +14,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCampus.Services.AppFi
 		{A6DD0A47-F90D-4096-B1B1-01ECF8B1F6E2} = {A6DD0A47-F90D-4096-B1B1-01ECF8B1F6E2}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCampus.Services.AuthenticationServiceAPI", "HealthCampus.Services.AuthenticationServiceAPI\HealthCampus.Services.AuthenticationServiceAPI.csproj", "{12DA609D-D417-4D09-906F-10C96DF7D569}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCampus.Services.AppUserAPI", "HealthCampus.Services.AppUserAPI\HealthCampus.Services.AppUserAPI.csproj", "{12DA609D-D417-4D09-906F-10C96DF7D569}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A6DD0A47-F90D-4096-B1B1-01ECF8B1F6E2} = {A6DD0A47-F90D-4096-B1B1-01ECF8B1F6E2}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthCampus.CommonUtilities", "HealthCampus.CommonUtilities\HealthCampus.CommonUtilities.csproj", "{A6DD0A47-F90D-4096-B1B1-01ECF8B1F6E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCampus.CommonUtilities", "HealthCampus.CommonUtilities\HealthCampus.CommonUtilities.csproj", "{A6DD0A47-F90D-4096-B1B1-01ECF8B1F6E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -71,16 +71,16 @@ namespace HealthCampus.Services.AppFileAPI.Models
         /// The date the file was uploaded.
         /// </summary>
         [Required]
-        public DateTime UploadedDate { get; set; }
-        /// <summary>
-        /// The date the file was last modified (if applicable).
-        /// </summary>
-        public DateTime? ModifiedDate { get; set; }
+        public DateTime UploadedAt { get; set; }
         /// <summary>
         /// The unique identifier of the user who uploaded the file.
         /// </summary>
         [Required]
         public Guid UploadedByUserId { get; set; }
+        /// <summary>
+        /// The date the file was last modified (if applicable).
+        /// </summary>
+        public DateTime? ModifiedAt { get; set; }
         /// <summary>
         /// The unique identifier of the user who last modified the file (if applicable).
         /// </summary>

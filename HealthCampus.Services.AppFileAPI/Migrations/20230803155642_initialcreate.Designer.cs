@@ -13,7 +13,7 @@ namespace HealthCampus.Services.AppFileAPI.Migrations
 {
     [DbContext(typeof(AppFileDbContext))]
     [Migration("20230803155642_initialcreate")]
-    partial class initialcreate
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

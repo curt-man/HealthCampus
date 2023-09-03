@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using HealthCampus.Services.AppFileAPI.Utilities;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,8 @@ builder.Services.AddSingleton<IMediaService, MediaService>();
 
 var app = builder.Build();
 
+SeedDatabase();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -70,3 +73,22 @@ app.MapControllers();
 
 app.Run();
 
+
+
+void SeedDatabase()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppFileDbContext>();
+        if (dbContext.Database.GetPendingMigrations().Count() > 0)
+        {
+            dbContext.Database.Migrate();
+        }
+
+        var seeder = new Seeder(dbContext);
+
+        seeder.SeedData();
+
+    }
+}
