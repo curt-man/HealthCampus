@@ -28,11 +28,6 @@ namespace HealthCampus.Services.AppUserAPI.Models
         public Guid AddressId { get; set; }
 
         /// <summary>
-        /// Reference to the address.
-        /// </summary>
-        public Address? Address { get; set; }
-
-        /// <summary>
         /// Flag indicating if this is the main address associated with the user.
         /// </summary>
         public bool IsMainAddress { get; set; }
