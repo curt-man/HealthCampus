@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace HealthCampus.Services.AppUserAPI.Models.Dto
+namespace HealthCampus.Services.AppUserAPI.Models.Dto.Request
 {
-    public class AppUserRegistrationRequestDto
+    public class AppUserRegisterRequestDto
     {
         /// <summary>
         /// The first name of the user.

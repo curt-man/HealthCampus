@@ -5,10 +5,26 @@ using Microsoft.AspNetCore.Identity;
 using HealthCampus.CommonUtilities.Enums;
 using HealthCampus.Services.AppUserAPI.Enums;
 
-namespace HealthCampus.Services.AppUserAPI.Models.Dto
+namespace HealthCampus.Services.AppUserAPI.Models.Dto.Request
 {
-    public class AdminAppUserRegistrationRequestDto : AppUserRegistrationRequestDto
+    public class AppUserUpdateRequestDto
     {
+        /// <summary>
+        /// The Id of the user.
+        /// </summary>
+        public Guid Id { get; set; }
+
+        /// <summary>
+        /// The first name of the user.
+        /// </summary>
+        [MaxLength(30)]
+        public string? FirstName { get; set; }
+
+        /// <summary>
+        /// The last name of the user.
+        /// </summary>
+        [MaxLength(30)]
+        public string? LastName { get; set; }
 
         /// <summary>
         /// The second name of the user.
@@ -32,13 +48,12 @@ namespace HealthCampus.Services.AppUserAPI.Models.Dto
         /// </summary>
         public GendersEnum? Gender { get; set; }
 
-        public LanguagesEnum? Language { get; set; }
-
-        public RolesEnum AppRole { get; set; }
-
+        [Phone]
         public string? PhoneNumber { get; set; }
 
-        public Address? Address { get; set; }
+        //public ICollection<AppUserLanguage>? Languages { get; set; }
+
+        //public ICollection<AppUserAddress>? Address { get; set; }
 
     }
 }

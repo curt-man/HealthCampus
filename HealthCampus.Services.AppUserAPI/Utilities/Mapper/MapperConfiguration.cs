@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HealthCampus.Services.AppUserAPI.Models;
 using HealthCampus.Services.AppUserAPI.Models.Dto;
 
 namespace HealthCampus.Services.AppUserAPI.Utilities.Mapper
@@ -9,8 +10,9 @@ namespace HealthCampus.Services.AppUserAPI.Utilities.Mapper
         {
             var mappingConfig = new MapperConfiguration(config =>
             {
-                config.AddProfile<AppUserProfile>();
-                config.AddProfile<AdminAppUserProfile>();
+                config.AddProfile<AppUserRegisterProfile>();
+                config.AddProfile<AdminAppUserRegisterProfile>();
+                config.CreateMap<AddressDto, Address>().ReverseMap();
             });
             return mappingConfig;
         }

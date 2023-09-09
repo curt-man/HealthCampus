@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using HealthCampus.Services.AppUserAPI.Models;
-using HealthCampus.Services.AppUserAPI.Models.Dto;
+using HealthCampus.Services.AppUserAPI.Models.Dto.Request;
 
 namespace HealthCampus.Services.AppUserAPI.Utilities.Mapper
 {
-    public class AppUserProfile : Profile
+    public class AppUserRegisterProfile : Profile
     {
-        public AppUserProfile()
+        public AppUserRegisterProfile()
         {
-            CreateMap<AppUser, AppUserRegistrationRequestDto>()
+            CreateMap<AppUser, AppUserRegisterRequestDto>()
                 .ForMember(
                     dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
                 .ForMember(
@@ -20,7 +20,7 @@ namespace HealthCampus.Services.AppUserAPI.Utilities.Mapper
 
             var guid = Guid.NewGuid();
 
-            CreateMap<AppUserRegistrationRequestDto, AppUser>()
+            CreateMap<AppUserRegisterRequestDto, AppUser>()
                 .ForMember(
                     dest => dest.Id, opt => opt.MapFrom(src => guid))
                 .ForMember(

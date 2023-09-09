@@ -47,7 +47,6 @@ namespace HealthCampus.Services.AppUserAPI.Models
         [ForeignKey(nameof(GenderId))]
         public GendersEnum? GenderId { get; set; }
 
-        //public Gender? Gender { get; set; }
 
         /// <summary>
         /// The date of registration of the user.

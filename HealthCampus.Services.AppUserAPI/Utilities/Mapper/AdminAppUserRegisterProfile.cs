@@ -3,14 +3,18 @@ using HealthCampus.CommonUtilities.Enums;
 using HealthCampus.Services.AppUserAPI.Enums;
 using HealthCampus.Services.AppUserAPI.Models;
 using HealthCampus.Services.AppUserAPI.Models.Dto;
+using HealthCampus.Services.AppUserAPI.Models.Dto.Request;
 
 namespace HealthCampus.Services.AppUserAPI.Utilities.Mapper
 {
-    public class AdminAppUserProfile : Profile
+    public class AdminAppUserRegisterProfile : Profile
     {
-        public AdminAppUserProfile()
+        private readonly IMapper _mapper = MappingConfig.RegisterMaps().CreateMapper();
+
+        public AdminAppUserRegisterProfile()
         {
-            CreateMap<AppUser, AdminAppUserRegistrationRequestDto>()
+
+            CreateMap<AppUser, AdminAppUserRegisterRequestDto>()
                 .ForMember(
                     dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
                 .ForMember(
@@ -20,7 +24,7 @@ namespace HealthCampus.Services.AppUserAPI.Utilities.Mapper
                 .ForMember(
                     dest => dest.EmailAddress, opt => opt.MapFrom(src => src.UserName))
                 .ForMember(
-                    dest => dest.Address, opt => opt.MapFrom(src => src.Addresses.Where(x => x.IsMainAddress).FirstOrDefault().Address))
+                    dest => dest.Address, opt => opt.MapFrom(src => _mapper.Map<AddressDto>(src.Addresses.Where(x => x.IsMainAddress).FirstOrDefault().Address)))
                 .ForMember(
                     dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
                 .ForMember(
@@ -36,7 +40,7 @@ namespace HealthCampus.Services.AppUserAPI.Utilities.Mapper
 
             var guid = Guid.NewGuid();
 
-            CreateMap<AdminAppUserRegistrationRequestDto, AppUser>()
+            CreateMap<AdminAppUserRegisterRequestDto, AppUser>()
                 .ForMember(
                     dest => dest.Id, opt => opt.MapFrom(src => guid))
                 .ForMember(
@@ -55,7 +59,7 @@ namespace HealthCampus.Services.AppUserAPI.Utilities.Mapper
                         {
                             new AppUserAddress()
                             {
-                                Address = src.Address,
+                                Address = _mapper.Map<Address>(src.Address),
                                 IsMainAddress = true,
                                 AppUserId = guid
                             }
@@ -81,6 +85,9 @@ namespace HealthCampus.Services.AppUserAPI.Utilities.Mapper
                         }))
                 .ForMember(
                     dest => dest.RegisteredAt, opt => opt.MapFrom(src => DateTime.UtcNow));
+            
         }
     }
 }
+
+
