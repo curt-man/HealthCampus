@@ -2,7 +2,7 @@
 using HealthCampus.CommonUtilities.Enums;
 using HealthCampus.Services.AppUserAPI.Data;
 using HealthCampus.Services.AppUserAPI.Models;
-using HealthCampus.Services.AppUserAPI.Models.Dto;
+using HealthCampus.Services.AppUserAPI.Models.Dto.Request;
 using HealthCampus.Services.AppUserAPI.Services;
 using HealthCampus.Services.AppUserAPI.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
@@ -33,12 +33,12 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
         [HttpPost]
         [Route("Register")]
-        public async Task<ActionResult<ResponseDto>> RegisterAsync([FromBody] AppUserRegistrationRequestDto request)
+        public async Task<ActionResult<ResponseDto>> RegisterAsync([FromBody] AppUserRegisterRequestDto request)
         {
             try
             {
                 AppUser registeredUser =
-                    await _appUserManager.RegisterAppUser<AppUserRegistrationRequestDto>(request);
+                    await _appUserManager.RegisterAppUser<AppUserRegisterRequestDto>(request);
 
                 await _appUserManager.AssignRoleToAppUser(registeredUser, RolesEnum.User);
 

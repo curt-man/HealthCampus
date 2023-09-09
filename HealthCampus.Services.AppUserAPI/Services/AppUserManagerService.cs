@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using HealthCampus.CommonUtilities.Enums;
 using HealthCampus.Services.AppUserAPI.Models;
-using HealthCampus.Services.AppUserAPI.Models.Dto;
+using HealthCampus.Services.AppUserAPI.Models.Dto.Request;
 using HealthCampus.Services.AppUserAPI.Services.IServices;
 using Microsoft.AspNetCore.Identity;
 
@@ -22,7 +22,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             _mapper = mapper;
         }
 
-        public async Task<AppUser> RegisterAppUser<T>(T request) where T : AppUserRegistrationRequestDto
+        public async Task<AppUser> RegisterAppUser<T>(T request) where T : AppUserRegisterRequestDto
         {
             var user = await _userManager.FindByEmailAsync(request.EmailAddress);
             if (user != null)
@@ -106,6 +106,30 @@ namespace HealthCampus.Services.AppUserAPI.Services
 
             string token = _jwtGenerator.GenerateToken(user);
             return token;
+        }
+
+        public async Task UpdateAppUser(AppUserUpdateRequestDto request)
+        {
+            var user = await _userManager.FindByIdAsync(request.Id.ToString());
+            if (user == null)
+            {
+                throw new Exception("User doesn't exist!");
+            }
+
+            user = _mapper.Map<AppUserUpdateRequestDto, AppUser>(request);
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                string errors = string.Empty;
+                foreach (var error in result.Errors)
+                {
+                    errors += error.Description + Environment.NewLine;
+                }
+                throw new ArgumentException(errors);
+            }
+
         }
 
 

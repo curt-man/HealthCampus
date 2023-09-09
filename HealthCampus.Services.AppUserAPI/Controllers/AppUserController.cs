@@ -2,7 +2,7 @@
 using HealthCampus.CommonUtilities.Enums;
 using HealthCampus.Services.AppUserAPI.Data;
 using HealthCampus.Services.AppUserAPI.Models;
-using HealthCampus.Services.AppUserAPI.Models.Dto;
+using HealthCampus.Services.AppUserAPI.Models.Dto.Request;
 using HealthCampus.Services.AppUserAPI.Services.IServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -34,40 +34,61 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult<ResponseDto>> GetAllUsersAsync()
+        public async Task<ActionResult<ResponseDto>> GetAppUsersAsync()
         {
             try
             {
                 var users = await _dbContext.Users.ToListAsync();
                 _response.Result = users;
+                return Ok(_response);
             }
             catch (Exception ex)
             {
                 SetErrorMessageToResponse(ex.Message);
             }
-            return Ok(_response);
+            return BadRequest(_response);
         }
 
         [HttpPost]
-        [Route("AddNewUser")]
-        public async Task<ActionResult<ResponseDto>> RegisterAsync([FromBody] AdminAppUserRegistrationRequestDto request)
+        [Route("Add")]
+        public async Task<ActionResult<ResponseDto>> CreateAsync([FromBody] AdminAppUserRegisterRequestDto request)
         {
             try
             { 
                 AppUser registeredUser =
-                    await _appUserManager.RegisterAppUser<AdminAppUserRegistrationRequestDto>(request);
+                    await _appUserManager.RegisterAppUser<AdminAppUserRegisterRequestDto>(request);
 
                 await _appUserManager.AssignRoleToAppUser(registeredUser, request.AppRole);
 
-                string token = await _appUserManager.LogInAppUser(registeredUser, request.Password);
+                return Ok(_response);
 
-                _response.Result = token;
             }
             catch (Exception ex)
             {
                 SetErrorMessageToResponse(ex.Message);
             }
-            return Ok(_response);
+            return BadRequest(_response);
+        }
+
+        [HttpPut]
+        [Route("Update")]
+        public async Task<ActionResult<ResponseDto>> UpdateAsync([FromBody] AppUserUpdateRequestDto request)
+        {
+            try
+            {
+                //AppUser registeredUser =
+                //    await _appUserManager.UpdateAppUser<AppUserUpdateRequestDto>(request);
+
+                //await _appUserManager.AssignRoleToAppUser(registeredUser, request.AppRole);
+
+                return Ok(_response);
+
+            }
+            catch (Exception ex)
+            {
+                SetErrorMessageToResponse(ex.Message);
+            }
+            return BadRequest(_response);
         }
 
 

@@ -28,19 +28,20 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
 
         [HttpGet]
-        [Route("GetProficiencies")]
+        [Route("")]
         public async Task<ActionResult<ResponseDto>> GetProficienciesAsync()
         {
             try
             {
                 var proficiencies = await _dbContext.Proficiencies.ToListAsync();
                 _response.Result = proficiencies;
+                return Ok(_response);
             }
             catch (Exception ex)
             {
                 SetErrorMessageToResponse(ex.Message);
             }
-            return Ok(_response);
+            return BadRequest(_response);
         }
     }
 }

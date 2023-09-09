@@ -27,19 +27,20 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
 
         [HttpGet]
-        [Route("GetLanguages")]
+        [Route("")]
         public async Task<ActionResult<ResponseDto>> GetLanguagesAsync()
         {
             try
             {
                 var languages = await _dbContext.Languages.ToListAsync();
                 _response.Result = languages;
+                return Ok(languages);
             }
             catch (Exception ex)
             {
                 SetErrorMessageToResponse(ex.Message);
             }
-            return Ok(_response);
+            return BadRequest(_response);
         }
     }
 }

@@ -26,22 +26,21 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
             _response = new ResponseDto();
         }
 
-
-
         [HttpGet]
-        [Route("GetUserStatus")]
+        [Route("")]
         public async Task<ActionResult<ResponseDto>> GetUserStatusAsync()
         {
             try
             {
                 var userStatus = await _dbContext.UserStatuses.ToListAsync();
                 _response.Result = userStatus;
+                return Ok(_response);
             }
             catch (Exception ex)
             {
                 SetErrorMessageToResponse(ex.Message);
             }
-            return Ok(_response);
+            return BadRequest(_response);
         }
     }
 }

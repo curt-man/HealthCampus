@@ -20,30 +20,29 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
         }
 
         private readonly AppUserDbContext _dbContext;
-        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 
-        public AppRoleController(AppUserDbContext AppUserDbContext, RoleManager<IdentityRole<Guid>> roleManager)
+        public AppRoleController(AppUserDbContext AppUserDbContext)
         {
             _response = new ResponseDto();
             _dbContext = AppUserDbContext;
-            _roleManager = roleManager;
         }
 
 
         [HttpGet]
-        [Route("GetAppRoles")]
+        [Route("")]
         public async Task<ActionResult<ResponseDto>> GetAppRolesAsync()
         {
             try
             {
-                var addresses = await _roleManager.Roles.ToListAsync();
-                _response.Result = addresses;
+                var roles = await _dbContext.Roles.ToListAsync();
+                _response.Result = roles;
+                return Ok(roles);
             }
             catch (Exception ex)
             {
                 SetErrorMessageToResponse(ex.Message);
             }
-            return Ok(_response);
+            return BadRequest(_response);
         }
     }
 }

@@ -27,19 +27,20 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
 
         [HttpGet]
-        [Route("GetGenders")]
+        [Route("")]
         public async Task<ActionResult<ResponseDto>> GetGendersAsync()
         {
             try
             {
                 var genders = await _dbContext.Genders.ToListAsync();
                 _response.Result = genders;
+                return Ok(_response);
             }
             catch (Exception ex)
             {
                 SetErrorMessageToResponse(ex.Message);
             }
-            return Ok(_response);
+            return BadRequest(_response);
         }
     }
 }
