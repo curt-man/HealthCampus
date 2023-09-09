@@ -12,7 +12,7 @@ namespace HealthCampus.Services.AppUserAPI.Models
         /// <summary>
         /// Primary key of the language.
         /// </summary>
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public LanguagesEnum Id { get; set; }
 
         /// <summary>

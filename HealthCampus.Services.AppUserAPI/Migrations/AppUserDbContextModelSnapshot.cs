@@ -222,10 +222,7 @@ namespace HealthCampus.Services.AppUserAPI.Migrations
             modelBuilder.Entity("HealthCampus.Services.AppUserAPI.Models.Gender", b =>
                 {
                     b.Property<byte>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<byte>("Id"));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -242,10 +239,7 @@ namespace HealthCampus.Services.AppUserAPI.Migrations
             modelBuilder.Entity("HealthCampus.Services.AppUserAPI.Models.Language", b =>
                 {
                     b.Property<byte>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<byte>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -260,10 +254,7 @@ namespace HealthCampus.Services.AppUserAPI.Migrations
             modelBuilder.Entity("HealthCampus.Services.AppUserAPI.Models.Proficiency", b =>
                 {
                     b.Property<byte>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<byte>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -278,10 +269,7 @@ namespace HealthCampus.Services.AppUserAPI.Migrations
             modelBuilder.Entity("HealthCampus.Services.AppUserAPI.Models.UserStatus", b =>
                 {
                     b.Property<byte>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<byte>("Id"));
 
                     b.Property<string>("Description")
                         .IsRequired()

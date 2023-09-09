@@ -12,7 +12,7 @@ namespace HealthCampus.Services.AppUserAPI.Models
         /// <summary>
         /// The unique identifier of the user status.
         /// </summary>
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public UserStatusesEnum Id { get; set; }
 
         /// <summary>

@@ -12,7 +12,7 @@ namespace HealthCampus.Services.AppUserAPI.Models
         /// <summary>
         /// Unique identifier for a user's language proficiency.
         /// </summary>
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public ProficienciesEnum Id { get; set; }
 
         /// <summary>

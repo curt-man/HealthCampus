@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HealthCampus.Services.AppUserAPI.Migrations
 {
     [DbContext(typeof(AppUserDbContext))]
-    [Migration("20230903061334_AddEnums")]
-    partial class AddEnums
+    [Migration("20230903064639_CreateDatabase")]
+    partial class CreateDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -225,10 +225,7 @@ namespace HealthCampus.Services.AppUserAPI.Migrations
             modelBuilder.Entity("HealthCampus.Services.AppUserAPI.Models.Gender", b =>
                 {
                     b.Property<byte>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<byte>("Id"));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -245,10 +242,7 @@ namespace HealthCampus.Services.AppUserAPI.Migrations
             modelBuilder.Entity("HealthCampus.Services.AppUserAPI.Models.Language", b =>
                 {
                     b.Property<byte>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<byte>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -263,10 +257,7 @@ namespace HealthCampus.Services.AppUserAPI.Migrations
             modelBuilder.Entity("HealthCampus.Services.AppUserAPI.Models.Proficiency", b =>
                 {
                     b.Property<byte>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<byte>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -281,10 +272,7 @@ namespace HealthCampus.Services.AppUserAPI.Migrations
             modelBuilder.Entity("HealthCampus.Services.AppUserAPI.Models.UserStatus", b =>
                 {
                     b.Property<byte>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<byte>("Id"));
 
                     b.Property<string>("Description")
                         .IsRequired()

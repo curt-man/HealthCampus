@@ -6,7 +6,7 @@ namespace HealthCampus.Services.AppUserAPI.Models
 {
     public class Gender
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public GendersEnum Id { get; set; }
         [Required]
         public string Name { get; set; }
