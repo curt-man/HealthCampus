@@ -7,8 +7,30 @@ using HealthCampus.Services.AppUserAPI.Enums;
 
 namespace HealthCampus.Services.AppUserAPI.Models.Dto.Request
 {
-    public class AdminAppUserRegisterRequestDto : AppUserRegisterRequestDto
+    public class AdminAppUserRegisterRequestDto : IAppUserRegisterRequestDto
     {
+
+        /// <summary>
+        /// The first name of the user.
+        /// </summary>
+        [Required]
+        [MaxLength(30)]
+        public string FirstName { get; set; }
+
+        /// <summary>
+        /// The last name of the user.
+        /// </summary>
+        [Required]
+        [MaxLength(30)]
+        public string LastName { get; set; }
+
+        [Required]
+        public string EmailAddress { get; set; }
+
+
+        [Required]
+        [DefaultValue("Welcome@123")]
+        public string Password { get; set; }
 
         /// <summary>
         /// The second name of the user.
@@ -38,7 +60,32 @@ namespace HealthCampus.Services.AppUserAPI.Models.Dto.Request
 
         public string? PhoneNumber { get; set; }
 
-        public AddressDto? Address { get; set; }
 
+        public AppUser ToAppUser(LanguagesEnum? userLanguage = null)
+        {
+            var appUserId = Guid.NewGuid();
+            return new AppUser
+            {
+                Id = appUserId,
+                FirstName = FirstName,
+                LastName = LastName,
+                Email = EmailAddress,
+                UserName = EmailAddress,
+                PhoneNumber = PhoneNumber,
+                TIN = TIN,
+                GenderId = Gender,
+                BirthDate = BirthDate,
+                RegisteredAt = DateTime.UtcNow,
+                Languages = Language == null ? null : new List<AppUserLanguage>()
+                {
+                    new AppUserLanguage
+                    {
+                        AppUserId = appUserId,
+                        LanguageId = Language ?? LanguagesEnum.English,
+                        ProficiencyId = ProficienciesEnum.Native
+                    }
+                }
+            };
+        }
     }
 }

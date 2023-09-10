@@ -3,6 +3,7 @@ using HealthCampus.CommonUtilities.Enums;
 using HealthCampus.Services.AppUserAPI.Models;
 using HealthCampus.Services.AppUserAPI.Models.Dto.Request;
 using HealthCampus.Services.AppUserAPI.Services.IServices;
+using HealthCampus.Services.AppUserAPI.Utilities;
 using Microsoft.AspNetCore.Identity;
 
 namespace HealthCampus.Services.AppUserAPI.Services
@@ -12,17 +13,15 @@ namespace HealthCampus.Services.AppUserAPI.Services
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly IJwtGeneratorService _jwtGenerator;
-        private readonly IMapper _mapper;
 
-        public AppUserManagerService(UserManager<AppUser> userManager, RoleManager<IdentityRole<Guid>> roleManager, IJwtGeneratorService jwtGenerator, IMapper mapper)
+        public AppUserManagerService(UserManager<AppUser> userManager, RoleManager<IdentityRole<Guid>> roleManager, IJwtGeneratorService jwtGenerator)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _jwtGenerator = jwtGenerator;
-            _mapper = mapper;
         }
 
-        public async Task<AppUser> RegisterAppUser<T>(T request) where T : AppUserRegisterRequestDto
+        public async Task<AppUser> RegisterAppUser<T>(T request) where T : IAppUserRegisterRequestDto
         {
             var user = await _userManager.FindByEmailAsync(request.EmailAddress);
             if (user != null)
@@ -30,7 +29,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
                 throw new Exception("User already exists!");
             }
 
-            user = _mapper.Map<T, AppUser>(request);
+            user = request.ToAppUser();
 
             var result = await _userManager.CreateAsync(user, request.Password);
 
@@ -116,7 +115,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
                 throw new Exception("User doesn't exist!");
             }
 
-            user = _mapper.Map<AppUserUpdateRequestDto, AppUser>(request);
+            user = request.ToAppUser();
 
             var result = await _userManager.UpdateAsync(user);
 

@@ -4,7 +4,6 @@ using HealthCampus.Services.AppUserAPI.Models;
 using HealthCampus.Services.AppUserAPI.Services;
 using HealthCampus.Services.AppUserAPI.Services.IServices;
 using HealthCampus.Services.AppUserAPI.Utilities;
-using HealthCampus.Services.AppUserAPI.Utilities.Mapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +17,21 @@ builder.Services.AddDbContext<AppUserDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("AppUserDatabase"));
 });
+
+#endregion
+
+#region Configuring AutoMapper
+
+// Just kidding, AutoMapper is a peace of shit.
+// We do mapping manually here.
+
+#endregion
+
+builder.Services.AddScoped<IJwtGeneratorService, JwtGeneratorService>();
+builder.Services.AddScoped<IAppUserManagerService, AppUserManagerService>();
+
+#region Configuring Authentication
+
 builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
 {
     options.Password.RequireDigit = false;
@@ -31,22 +45,9 @@ builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
 })
     .AddEntityFrameworkStores<AppUserDbContext>()
     .AddDefaultTokenProviders();
-
-#endregion
-
-#region Configuring AutoMapper
-
-IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
-builder.Services.AddSingleton(mapper);
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-#endregion
-
-builder.Services.AddScoped<IJwtGeneratorService, JwtGeneratorService>();
-builder.Services.AddScoped<IAppUserManagerService, AppUserManagerService>();
-
-
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
+
+#endregion
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

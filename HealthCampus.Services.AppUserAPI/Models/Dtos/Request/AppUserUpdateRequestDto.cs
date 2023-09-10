@@ -18,13 +18,13 @@ namespace HealthCampus.Services.AppUserAPI.Models.Dto.Request
         /// The first name of the user.
         /// </summary>
         [MaxLength(30)]
-        public string? FirstName { get; set; }
+        public string FirstName { get; set; }
 
         /// <summary>
         /// The last name of the user.
         /// </summary>
         [MaxLength(30)]
-        public string? LastName { get; set; }
+        public string LastName { get; set; }
 
         /// <summary>
         /// The second name of the user.
@@ -51,9 +51,21 @@ namespace HealthCampus.Services.AppUserAPI.Models.Dto.Request
         [Phone]
         public string? PhoneNumber { get; set; }
 
-        //public ICollection<AppUserLanguage>? Languages { get; set; }
 
-        //public ICollection<AppUserAddress>? Address { get; set; }
-
+        public AppUser ToAppUser()
+        {
+            return new AppUser
+            {
+                Id = Id,
+                FirstName = FirstName,
+                LastName = LastName,
+                SecondName = SecondName,
+                PhoneNumber = PhoneNumber,
+                TIN = TIN,
+                GenderId = Gender,
+                BirthDate = BirthDate,
+                ModifiedAt = DateTime.UtcNow
+            };
+        }
     }
 }

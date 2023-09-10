@@ -9,6 +9,6 @@ namespace HealthCampus.Services.AppUserAPI.Services.IServices
         Task AssignRoleToAppUser(AppUser user, RolesEnum role);
         Task<string> LogInAppUser(AppUser user, string password);
         Task<string> LogInAppUser(AppUserLoginRequestDto request);
-        Task<AppUser> RegisterAppUser<T>(T request) where T : AppUserRegisterRequestDto;
+        Task<AppUser> RegisterAppUser<T>(T request) where T : IAppUserRegisterRequestDto;
     }
 }

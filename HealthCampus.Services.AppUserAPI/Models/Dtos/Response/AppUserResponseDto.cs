@@ -7,6 +7,11 @@ namespace HealthCampus.Services.AppUserAPI.Models.Dto.Response
     public class AppUserResponseDto
     {
         /// <summary>
+        /// The Id of the user.
+        /// </summary>
+        public Guid Id { get; set; }
+
+        /// <summary>
         /// The first name of the user.
         /// </summary>
         public string FirstName { get; set; }
@@ -31,6 +36,17 @@ namespace HealthCampus.Services.AppUserAPI.Models.Dto.Response
         /// </summary>
         public Guid? ProfilePictureId { get; set; }
 
-
+        public AppUserResponseDto FromAppUserResponseDto(AppUser model)
+        {
+            return new AppUserResponseDto()
+            {
+                Id = model.Id,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                UserName = model.UserName,
+                GenderId = model.GenderId,
+                ProfilePictureId = model.ProfilePictureId
+            };
+        }
     }
 }
