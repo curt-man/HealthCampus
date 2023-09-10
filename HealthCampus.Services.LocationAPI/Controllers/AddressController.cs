@@ -1,12 +1,13 @@
-﻿using AutoMapper;
-using HealthCampus.CommonUtilities.Dto;
-using HealthCampus.Services.AppUserAPI.Data;
-using HealthCampus.Services.AppUserAPI.Models;
-using HealthCampus.Services.AppUserAPI.Models.Dto;
+﻿using HealthCampus.CommonUtilities.Dto;
+using HealthCampus.Services.LocationAPI.Data;
+using HealthCampus.Services.LocationAPI.Models;
+using HealthCampus.Services.LocationAPI.Models.Dtos;
+using HealthCampus.Services.LocationAPI.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
-namespace HealthCampus.Services.AppUserAPI.Controllers
+namespace HealthCampus.Services.LocationAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -20,23 +21,22 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
             _response.Message = message;
         }
 
-        private readonly AppUserDbContext _dbContext;
-        private readonly IMapper _mapper;
+        private readonly LocationDbContext _dbContext;
 
-        public AddressController(AppUserDbContext AppUserDbContext)
+        public AddressController(LocationDbContext dbContext)
         {
-            _dbContext = AppUserDbContext;
+            _dbContext = dbContext;
             _response = new ResponseDto();
         }
 
 
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult<ResponseDto>> GetAllAsync()
+        public async Task<ActionResult<ResponseDto>> GetAddressesAsync()
         {
             try
             {
-                var addresses = await _dbContext.Addresses.ToListAsync();
+                List<AddressResponseDto> addresses = await AddressResponseDto.FromAddressQueryableAsync(_dbContext.Addresses);
                 _response.Result = addresses;
                 return Ok(_response);
             }
@@ -58,8 +58,8 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
                 {
                     return NotFound(_response);
                 }
-                var addressDto = _mapper.Map<AddressDto>(address);
-                _response.Result = addressDto;
+                var dto = AddressResponseDto.FromAddress(address);
+                _response.Result = dto;
                 return Ok(_response);
             }
             catch (Exception ex)
@@ -71,12 +71,12 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
         [HttpPost]
         [Route("Create")]
-        public async Task<ActionResult<ResponseDto>> CreateAsync([FromBody] AddressDto addressDto)
+        public async Task<ActionResult<ResponseDto>> CreateAsync([FromBody] AddressCreateDto dto)
         {
             try
             {
-                var address = _mapper.Map<Address>(addressDto);
-                await _dbContext.Addresses.AddAsync(address);
+                var model = AddressCreateDto.ToAddress(dto);
+                await _dbContext.Addresses.AddAsync(model);
                 await _dbContext.SaveChangesAsync();
                 return Ok(_response);
             }
@@ -89,11 +89,11 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
         [HttpPut]
         [Route("Update")]
-        public async Task<ActionResult<ResponseDto>> UpdateAsync([FromBody] AddressDto addressDto)
+        public async Task<ActionResult<ResponseDto>> UpdateAsync([FromBody] AddressUpdateDto dto)
         {
             try
             {
-                var address = _mapper.Map<Address>(addressDto);
+                var address = AddressUpdateDto.ToAddress(dto);
                 _dbContext.Addresses.Update(address);
                 await _dbContext.SaveChangesAsync();
                 return Ok(_response);
@@ -126,6 +126,9 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
             }
             return BadRequest(_response);
         }
-
     }
 }
+
+
+
+

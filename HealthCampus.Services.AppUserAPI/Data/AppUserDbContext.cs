@@ -15,10 +15,8 @@ namespace HealthCampus.Services.AppUserAPI.Data
 
         public DbSet<AppUser> AppUsers { get; set; }
         //public DbSet<RefreshToken> RefreshTokens { get; set; }
-        public DbSet<AppUserAddress> AppUsersAddresses { get; set; }
         public DbSet<AppUserLanguage> AppUsersLanguages { get; set; }
         public DbSet<AppUserUserStatus> AppUsersUserStatuses { get; set; }
-        public DbSet<Address> Addresses { get; set; }
         public DbSet<Language> Languages { get; set; }
         public DbSet<Proficiency> Proficiencies { get; set; }
         public DbSet<Gender> Genders { get; set; }

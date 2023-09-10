@@ -64,14 +64,10 @@ namespace HealthCampus.Services.AppUserAPI.Models
         public Guid? ProfilePictureId { get; set; }
 
         /// <summary>
-        /// User's addresses.
-        /// </summary>
-        public ICollection<AppUserAddress>? Addresses { get; set; }
-
-        /// <summary>
         /// User's languages.
         /// </summary>
         public ICollection<AppUserLanguage>? Languages { get; set; }
+        
 
     }
 }

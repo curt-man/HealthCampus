@@ -70,26 +70,26 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
             return BadRequest(_response);
         }
 
-        [HttpPut]
-        [Route("Update")]
-        public async Task<ActionResult<ResponseDto>> UpdateAsync([FromBody] AppUserUpdateRequestDto request)
-        {
-            try
-            {
-                //AppUser registeredUser =
-                //    await _appUserManager.UpdateAppUser<AppUserUpdateRequestDto>(request);
+        //[HttpPut]
+        //[Route("Update")]
+        //public async Task<ActionResult<ResponseDto>> UpdateAsync([FromBody] AppUserUpdateRequestDto request)
+        //{
+        //    try
+        //    {
+        //        AppUser registeredUser =
+        //            await _appUserManager.UpdateAppUser<AppUserUpdateRequestDto>(request);
 
-                //await _appUserManager.AssignRoleToAppUser(registeredUser, request.AppRole);
+        //        await _appUserManager.AssignRoleToAppUser(registeredUser, request.AppRole);
 
-                return Ok(_response);
+        //        return Ok(_response);
 
-            }
-            catch (Exception ex)
-            {
-                SetErrorMessageToResponse(ex.Message);
-            }
-            return BadRequest(_response);
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        SetErrorMessageToResponse(ex.Message);
+        //    }
+        //    return BadRequest(_response);
+        //}
 
 
     }
