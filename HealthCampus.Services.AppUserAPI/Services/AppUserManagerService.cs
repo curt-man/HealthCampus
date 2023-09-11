@@ -29,7 +29,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
                 throw new Exception("User already exists!");
             }
 
-            user = request.ToAppUser();
+            user = T.ToAppUser(request);
 
             var result = await _userManager.CreateAsync(user, request.Password);
 
@@ -115,7 +115,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
                 throw new Exception("User doesn't exist!");
             }
 
-            user = request.ToAppUser();
+            user = AppUserUpdateRequestDto.ToAppUser(request);
 
             var result = await _userManager.UpdateAsync(user);
 

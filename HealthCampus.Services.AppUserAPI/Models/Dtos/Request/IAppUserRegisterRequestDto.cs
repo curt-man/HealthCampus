@@ -9,6 +9,6 @@ namespace HealthCampus.Services.AppUserAPI.Models.Dto.Request
         string LastName { get; set; }
         string Password { get; set; }
 
-        public AppUser ToAppUser(LanguagesEnum? userLanguage = null);
+        public static abstract AppUser ToAppUser<T>(T dto, LanguagesEnum? userLanguage = null) where T : IAppUserRegisterRequestDto;
     }
 }

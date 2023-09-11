@@ -36,7 +36,7 @@ namespace HealthCampus.Services.AppUserAPI.Models.Dto.Response
         /// </summary>
         public Guid? ProfilePictureId { get; set; }
 
-        public AppUserResponseDto FromAppUserResponseDto(AppUser model)
+        public static AppUserResponseDto FromAppUser(AppUser model)
         {
             return new AppUserResponseDto()
             {

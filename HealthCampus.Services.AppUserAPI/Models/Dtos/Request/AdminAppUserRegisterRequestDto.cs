@@ -60,28 +60,32 @@ namespace HealthCampus.Services.AppUserAPI.Models.Dto.Request
 
         public string? PhoneNumber { get; set; }
 
+        public static AppUser ToAppUser<T>(T dto, LanguagesEnum? userLanguage = null) where T : IAppUserRegisterRequestDto
+        {
+            return ToAppUser(dto as AdminAppUserRegisterRequestDto, userLanguage);
+        }
 
-        public AppUser ToAppUser(LanguagesEnum? userLanguage = null)
+        public static AppUser ToAppUser(AdminAppUserRegisterRequestDto dto, LanguagesEnum? userLanguage = null)
         {
             var appUserId = Guid.NewGuid();
             return new AppUser
             {
                 Id = appUserId,
-                FirstName = FirstName,
-                LastName = LastName,
-                Email = EmailAddress,
-                UserName = EmailAddress,
-                PhoneNumber = PhoneNumber,
-                TIN = TIN,
-                GenderId = Gender,
-                BirthDate = BirthDate,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                Email = dto.EmailAddress,
+                UserName = dto.EmailAddress,
+                PhoneNumber = dto.PhoneNumber,
+                TIN = dto.TIN,
+                GenderId = dto.Gender,
+                BirthDate = dto.BirthDate,
                 RegisteredAt = DateTime.UtcNow,
-                Languages = Language == null ? null : new List<AppUserLanguage>()
+                Languages = dto.Language == null ? null : new List<AppUserLanguage>()
                 {
                     new AppUserLanguage
                     {
                         AppUserId = appUserId,
-                        LanguageId = Language ?? LanguagesEnum.English,
+                        LanguageId = dto.Language ?? LanguagesEnum.English,
                         ProficiencyId = ProficienciesEnum.Native
                     }
                 }

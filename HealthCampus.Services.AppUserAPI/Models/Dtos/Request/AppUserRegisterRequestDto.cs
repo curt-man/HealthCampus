@@ -27,21 +27,28 @@ namespace HealthCampus.Services.AppUserAPI.Models.Dto.Request
         [Required]
         [DefaultValue("Welcome@123")]
         public string Password { get; set; }
+        
 
 
-        public AppUser ToAppUser(LanguagesEnum? userLanguage = null)
+        public static AppUser ToAppUser<T>(T dto, LanguagesEnum? userLanguage = null) where T : IAppUserRegisterRequestDto
+        {
+            return ToAppUser(dto as AppUserRegisterRequestDto, userLanguage);
+        }
+
+
+        public static AppUser ToAppUser(AppUserRegisterRequestDto dto, LanguagesEnum? userLanguage = null)
         {
             return new AppUser()
             {
                 Id = Guid.NewGuid(),
-                FirstName = FirstName,
-                LastName = LastName,
-                Email = EmailAddress,
-                UserName = EmailAddress,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                Email = dto.EmailAddress,
+                UserName = dto.EmailAddress,
                 RegisteredAt = DateTime.UtcNow,
             };
         }
 
-        
+
     }
 }

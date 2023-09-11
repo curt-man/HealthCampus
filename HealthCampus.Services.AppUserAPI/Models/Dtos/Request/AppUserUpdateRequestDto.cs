@@ -52,18 +52,18 @@ namespace HealthCampus.Services.AppUserAPI.Models.Dto.Request
         public string? PhoneNumber { get; set; }
 
 
-        public AppUser ToAppUser()
+        public static AppUser ToAppUser(AppUserUpdateRequestDto dto)
         {
             return new AppUser
             {
-                Id = Id,
-                FirstName = FirstName,
-                LastName = LastName,
-                SecondName = SecondName,
-                PhoneNumber = PhoneNumber,
-                TIN = TIN,
-                GenderId = Gender,
-                BirthDate = BirthDate,
+                Id = dto.Id,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                SecondName = dto.SecondName,
+                PhoneNumber = dto.PhoneNumber,
+                TIN = dto.TIN,
+                GenderId = dto.Gender,
+                BirthDate = dto.BirthDate,
                 ModifiedAt = DateTime.UtcNow
             };
         }
