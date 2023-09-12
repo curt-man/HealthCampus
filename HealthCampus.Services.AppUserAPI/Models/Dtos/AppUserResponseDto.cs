@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace HealthCampus.Services.AppUserAPI.Models.Dto.Response
+namespace HealthCampus.Services.AppUserAPI.Models.Dtos
 {
     public class AppUserResponseDto
     {

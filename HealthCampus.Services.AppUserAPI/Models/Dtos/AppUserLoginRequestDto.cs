@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace HealthCampus.Services.AppUserAPI.Models.Dto.Request
+namespace HealthCampus.Services.AppUserAPI.Models.Dtos
 {
     public class AppUserLoginRequestDto
     {

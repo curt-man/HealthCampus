@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace HealthCampus.Services.AppUserAPI.Models.Dto.Request
+namespace HealthCampus.Services.AppUserAPI.Models.Dtos
 {
     public class AppUserRegisterRequestDto : IAppUserRegisterRequestDto
     {
@@ -27,7 +27,7 @@ namespace HealthCampus.Services.AppUserAPI.Models.Dto.Request
         [Required]
         [DefaultValue("Welcome@123")]
         public string Password { get; set; }
-        
+
 
 
         public static AppUser ToAppUser<T>(T dto, LanguagesEnum? userLanguage = null) where T : IAppUserRegisterRequestDto

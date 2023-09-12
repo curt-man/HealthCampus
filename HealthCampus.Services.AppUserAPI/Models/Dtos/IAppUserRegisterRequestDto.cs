@@ -1,6 +1,6 @@
 ﻿using HealthCampus.Services.AppUserAPI.Enums;
 
-namespace HealthCampus.Services.AppUserAPI.Models.Dto.Request
+namespace HealthCampus.Services.AppUserAPI.Models.Dtos
 {
     public interface IAppUserRegisterRequestDto
     {
