@@ -2,7 +2,7 @@
 using HealthCampus.CommonUtilities.Enums;
 using HealthCampus.Services.AppUserAPI.Data;
 using HealthCampus.Services.AppUserAPI.Models;
-using HealthCampus.Services.AppUserAPI.Models.Dto.Request;
+using HealthCampus.Services.AppUserAPI.Models.Dtos;
 using HealthCampus.Services.AppUserAPI.Services;
 using HealthCampus.Services.AppUserAPI.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
@@ -37,12 +37,11 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
         {
             try
             {
-                AppUser registeredUser =
-                    await _appUserManager.RegisterAppUser<AppUserRegisterRequestDto>(request);
+                AppUser registeredUser = await _appUserManager.Register(request);
 
-                await _appUserManager.AssignRoleToAppUser(registeredUser, RolesEnum.User);
+                await _appUserManager.AssignRoleTo(registeredUser, RolesEnum.User);
 
-                string token = await _appUserManager.LogInAppUser(registeredUser, request.Password);
+                string token = await _appUserManager.LogIn(registeredUser, request.Password);
 
                 _response.Result = token;
             }
@@ -58,7 +57,7 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
         {
             try
             {
-                var token = await _appUserManager.LogInAppUser(request);
+                var token = await _appUserManager.LogIn(request);
                 _response.Result = token;
             }
             catch (Exception ex)

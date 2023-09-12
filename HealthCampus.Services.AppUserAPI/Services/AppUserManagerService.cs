@@ -1,27 +1,38 @@
 ﻿using AutoMapper;
+using Azure;
 using HealthCampus.CommonUtilities.Enums;
 using HealthCampus.Services.AppUserAPI.Models;
-using HealthCampus.Services.AppUserAPI.Models.Dto.Request;
+using HealthCampus.Services.AppUserAPI.Models.Dtos;
 using HealthCampus.Services.AppUserAPI.Services.IServices;
 using HealthCampus.Services.AppUserAPI.Utilities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace HealthCampus.Services.AppUserAPI.Services
 {
     public class AppUserManagerService : IAppUserManagerService
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly IJwtGeneratorService _jwtGenerator;
 
-        public AppUserManagerService(UserManager<AppUser> userManager, RoleManager<IdentityRole<Guid>> roleManager, IJwtGeneratorService jwtGenerator)
+        public AppUserManagerService(UserManager<AppUser> userManager, IJwtGeneratorService jwtGenerator)
         {
             _userManager = userManager;
-            _roleManager = roleManager;
             _jwtGenerator = jwtGenerator;
         }
 
-        public async Task<AppUser> RegisterAppUser<T>(T request) where T : IAppUserRegisterRequestDto
+        public async Task<AppUserResponseDto> Get(Guid appUserId)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == appUserId);
+            if (user == null)
+            {
+                throw new Exception();
+            }
+            var dto = AppUserResponseDto.FromAppUser(user);
+            return dto;
+        }
+
+        public async Task<AppUser> Register<T>(T request) where T : IAppUserRegisterRequestDto
         {
             var user = await _userManager.FindByEmailAsync(request.EmailAddress);
             if (user != null)
@@ -46,7 +57,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             return user;
         }
 
-        public async Task AssignRoleToAppUser(AppUser user, RolesEnum role)
+        public async Task AssignRoleTo(AppUser user, RolesEnum role)
         {
             var result = await _userManager.AddToRoleAsync(user, role.ToString());
 
@@ -61,17 +72,12 @@ namespace HealthCampus.Services.AppUserAPI.Services
             }
         }
 
-        public async Task<string> LogInAppUser(AppUserLoginRequestDto request)
+        public async Task<string> LogIn(AppUserLoginRequestDto request)
         {
-            AppUser user;
-            if (request.EmailOrUsername.Contains("@"))
-            {
-                user = await _userManager.FindByEmailAsync(request.EmailOrUsername);
-            }
-            else
-            {
-                user = await _userManager.FindByNameAsync(request.EmailOrUsername);
-            }
+            AppUser user = request.EmailOrUsername.Contains("@")
+                ? await _userManager.FindByEmailAsync(request.EmailOrUsername)
+                : await _userManager.FindByNameAsync(request.EmailOrUsername);
+
             if (user == null)
             {
                 throw new Exception("Invalid credentials");
@@ -89,7 +95,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
         }
 
 
-        public async Task<string> LogInAppUser(AppUser user, string password)
+        public async Task<string> LogIn(AppUser user, string password)
         {
             if (user == null)
             {
@@ -107,15 +113,14 @@ namespace HealthCampus.Services.AppUserAPI.Services
             return token;
         }
 
-        public async Task UpdateAppUser(AppUserUpdateRequestDto request)
+        public async Task Update(AppUserUpdateRequestDto dto)
         {
-            var user = await _userManager.FindByIdAsync(request.Id.ToString());
-            if (user == null)
+            bool isUserExist = await _userManager.Users.AnyAsync(x => x.Id == dto.Id);
+            if(isUserExist == false)
             {
-                throw new Exception("User doesn't exist!");
+                throw new Exception("User does not exist!");
             }
-
-            user = AppUserUpdateRequestDto.ToAppUser(request);
+            AppUser user = AppUserUpdateRequestDto.ToAppUser(dto);
 
             var result = await _userManager.UpdateAsync(user);
 
@@ -129,6 +134,26 @@ namespace HealthCampus.Services.AppUserAPI.Services
                 throw new ArgumentException(errors);
             }
 
+        }
+
+        public async Task Delete(Guid appUserId)
+        {
+            AppUser user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == appUserId);
+            if (user == null)
+            {
+                throw new Exception("User does not exist!");
+            }
+            var result = await _userManager.DeleteAsync(user);
+
+            if (!result.Succeeded)
+            {
+                string errors = string.Empty;
+                foreach (var error in result.Errors)
+                {
+                    errors += error.Description + Environment.NewLine;
+                }
+                throw new ArgumentException(errors);
+            }
         }
 
 

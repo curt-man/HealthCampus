@@ -2,7 +2,8 @@
 using HealthCampus.CommonUtilities.Enums;
 using HealthCampus.Services.AppUserAPI.Data;
 using HealthCampus.Services.AppUserAPI.Models;
-using HealthCampus.Services.AppUserAPI.Models.Dto.Request;
+using HealthCampus.Services.AppUserAPI.Models.Dto.Response;
+using HealthCampus.Services.AppUserAPI.Models.Dtos;
 using HealthCampus.Services.AppUserAPI.Services.IServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -49,16 +50,32 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
             return BadRequest(_response);
         }
 
+        [HttpGet]
+        [Route("Get/{appUserId}")]
+        public async Task<ActionResult<ResponseDto>> GetAsync(Guid appUserId)
+        {
+            try
+            {
+                var user = await _appUserManager.Get(appUserId);
+                _response.Result = user;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                SetErrorMessageToResponse(ex.Message);
+            }
+            return BadRequest(_response);
+        }
+
         [HttpPost]
         [Route("Add")]
         public async Task<ActionResult<ResponseDto>> CreateAsync([FromBody] AdminAppUserRegisterRequestDto request)
         {
             try
-            { 
-                AppUser registeredUser =
-                    await _appUserManager.RegisterAppUser<AdminAppUserRegisterRequestDto>(request);
+            {
+                AppUser registeredUser = await _appUserManager.Register(request);
 
-                await _appUserManager.AssignRoleToAppUser(registeredUser, request.AppRole);
+                await _appUserManager.AssignRoleTo(registeredUser, request.AppRole);
 
                 return Ok(_response);
 
@@ -70,27 +87,39 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
             return BadRequest(_response);
         }
 
-        //[HttpPut]
-        //[Route("Update")]
-        //public async Task<ActionResult<ResponseDto>> UpdateAsync([FromBody] AppUserUpdateRequestDto request)
-        //{
-        //    try
-        //    {
-        //        AppUser registeredUser =
-        //            await _appUserManager.UpdateAppUser<AppUserUpdateRequestDto>(request);
+        [HttpPut]
+        [Route("Update")]
+        public async Task<ActionResult<ResponseDto>> UpdateAsync([FromBody] AppUserUpdateRequestDto request)
+        {
+            try
+            {
+                await _appUserManager.Update(request);
 
-        //        await _appUserManager.AssignRoleToAppUser(registeredUser, request.AppRole);
+                return Ok(_response);
 
-        //        return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                SetErrorMessageToResponse(ex.Message);
+            }
+            return BadRequest(_response);
+        }
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        SetErrorMessageToResponse(ex.Message);
-        //    }
-        //    return BadRequest(_response);
-        //}
-
+        [HttpGet]
+        [Route("Delete/{appUserId}")]
+        public async Task<ActionResult<ResponseDto>> DeleteAsync(Guid appUserId)
+        {
+            try
+            {
+                await _appUserManager.Delete(appUserId);
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                SetErrorMessageToResponse(ex.Message);
+            }
+            return BadRequest(_response);
+        }
 
     }
 }
