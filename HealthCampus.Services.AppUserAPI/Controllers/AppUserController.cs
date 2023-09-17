@@ -2,7 +2,6 @@
 using HealthCampus.CommonUtilities.Enums;
 using HealthCampus.Services.AppUserAPI.Data;
 using HealthCampus.Services.AppUserAPI.Models;
-using HealthCampus.Services.AppUserAPI.Models.Dto.Response;
 using HealthCampus.Services.AppUserAPI.Models.Dtos;
 using HealthCampus.Services.AppUserAPI.Services.IServices;
 using Microsoft.AspNetCore.Identity;
@@ -51,12 +50,12 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
         }
 
         [HttpGet]
-        [Route("Get/{appUserId}")]
-        public async Task<ActionResult<ResponseDto>> GetAsync(Guid appUserId)
+        [Route("Get/Id/{id}")]
+        public async Task<ActionResult<ResponseDto>> GetAsync(Guid id)
         {
             try
             {
-                var user = await _appUserManager.Get(appUserId);
+                var user = await _appUserManager.Get(id);
                 _response.Result = user;
                 return Ok(_response);
             }
@@ -66,6 +65,24 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
             }
             return BadRequest(_response);
         }
+
+        [HttpGet]
+        [Route("Get/Username/{username}")]
+        public async Task<ActionResult<ResponseDto>> GetAsync(string username)
+        {
+            try
+            {
+                var user = await _appUserManager.Get(username);
+                _response.Result = user;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                SetErrorMessageToResponse(ex.Message);
+            }
+            return BadRequest(_response);
+        }
+
 
         [HttpPost]
         [Route("Add")]

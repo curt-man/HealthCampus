@@ -32,9 +32,20 @@ namespace HealthCampus.Services.AppUserAPI.Services
             return users;
         }
 
-        public async Task<AppUserResponseDto> Get(Guid appUserId)
+        public async Task<AppUserResponseDto> Get(Guid id)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == appUserId);
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
+            if (user == null)
+            {
+                throw new Exception();
+            }
+            var dto = AppUserResponseDto.FromAppUser(user);
+            return dto;
+        }
+
+        public async Task<AppUserResponseDto> Get(string username)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == username);
             if (user == null)
             {
                 throw new Exception();
@@ -126,12 +137,12 @@ namespace HealthCampus.Services.AppUserAPI.Services
 
         public async Task Update(AppUserUpdateRequestDto dto)
         {
-            bool isUserExist = await _userManager.Users.AnyAsync(x => x.Id == dto.Id);
-            if(isUserExist == false)
+            AppUser user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if(user == null)
             {
                 throw new Exception("User does not exist!");
             }
-            AppUser user = AppUserUpdateRequestDto.ToAppUser(dto);
+            AppUserUpdateRequestDto.MapToAppUser(dto, user);
 
             var result = await _userManager.UpdateAsync(user);
 

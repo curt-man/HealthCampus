@@ -7,7 +7,8 @@ namespace HealthCampus.Services.AppUserAPI.Services.IServices
     public interface IAppUserManagerService
     {
         Task<List<AppUserResponseDto>> GetAll();
-        Task<AppUserResponseDto> Get(Guid appUserId);
+        Task<AppUserResponseDto> Get(Guid id);
+        Task<AppUserResponseDto> Get(string username);
         Task AssignRoleTo(AppUser user, RolesEnum role);
         Task Delete(Guid appUserId);
         Task<string> LogIn(AppUser user, string password);

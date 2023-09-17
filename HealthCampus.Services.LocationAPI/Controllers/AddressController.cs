@@ -1,8 +1,10 @@
 ﻿using HealthCampus.CommonUtilities.Dto;
+using HealthCampus.CommonUtilities.Enums;
 using HealthCampus.Services.LocationAPI.Data;
 using HealthCampus.Services.LocationAPI.Models;
 using HealthCampus.Services.LocationAPI.Models.Dtos;
 using HealthCampus.Services.LocationAPI.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -48,8 +50,9 @@ namespace HealthCampus.Services.LocationAPI.Controllers
         }
 
         [HttpGet]
-        [Route("GetById/{id}")]
-        public async Task<ActionResult<ResponseDto>> GetByIdAsync(Guid id)
+        [Route("Get/Id/{id}")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto>> GetAsync(Guid id)
         {
             try
             {
@@ -75,8 +78,8 @@ namespace HealthCampus.Services.LocationAPI.Controllers
         {
             try
             {
-                var model = AddressCreateDto.ToAddress(dto);
-                await _dbContext.Addresses.AddAsync(model);
+                var address = AddressCreateDto.ToAddress(dto);
+                await _dbContext.Addresses.AddAsync(address);
                 await _dbContext.SaveChangesAsync();
                 return Ok(_response);
             }
@@ -106,7 +109,7 @@ namespace HealthCampus.Services.LocationAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("Delete/{id}")]
+        [Route("Delete/Id/{id}")]
         public async Task<ActionResult<ResponseDto>> DeleteAsync(Guid id)
         {
             try

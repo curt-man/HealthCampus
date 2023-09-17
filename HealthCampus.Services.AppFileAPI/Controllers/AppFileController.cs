@@ -2,7 +2,6 @@
 using HealthCampus.Services.AppFileAPI.Data;
 using HealthCampus.Services.AppFileAPI.Models;
 using HealthCampus.Services.AppFileAPI.Models.Dto;
-using HealthCampus.Services.AppFileAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,8 +10,8 @@ using System.Data.Entity.Core;
 using System.Drawing;
 using System.IO.Compression;
 using HealthCampus.Services.AppFileAPI.Utilities;
-using static System.Net.WebRequestMethods;
 using HealthCampus.CommonUtilities.Dto;
+using HealthCampus.Services.AppFileAPI.Services.IService;
 
 namespace HealthCampus.Services.AppFileAPI.Controllers
 {
@@ -44,24 +43,8 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
             _mediaService = mediaService;
         }
 
-        [HttpGet("{fileId}")]
-        public async Task<ResponseDto> GetAppFile(string fileId)
-        {
-            try
-            {
-                var appFile = await _context.AppFiles.FirstOrDefaultAsync(x => x.Id.ToString() == fileId);
-
-                response.Result = _mapper.Map<AppFileResponseDto>(appFile);
-            }
-            catch (Exception ex)
-            {
-                SetErrorMessageToResponse(ex.Message);
-            }
-            return response;
-        }
-
-        [HttpGet("list")]
-        public async Task<ResponseDto> GetListOfAppFiles()
+        [HttpGet("")]
+        public async Task<ResponseDto> GetAppFilesAsync()
         {
             try
             {
@@ -75,10 +58,26 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
             return response;
         }
 
+        [HttpGet("Get/Id/{id}")]
+        public async Task<ResponseDto> Get(Guid id)
+        {
+            try
+            {
+                var appFile = await _context.AppFiles.FirstOrDefaultAsync(x => x.Id == id);
 
-        [HttpPost("upload")]
+                response.Result = _mapper.Map<AppFileResponseDto>(appFile);
+            }
+            catch (Exception ex)
+            {
+                SetErrorMessageToResponse(ex.Message);
+            }
+            return response;
+        }
+
+
+        [HttpPost("Upload")]
         [Consumes("multipart/form-data")]
-        public async Task<ResponseDto> UploadAppFile([FromForm] AppFileRequestDto request)
+        public async Task<ResponseDto> Upload([FromForm] AppFileRequestDto request)
         {
             try
             {
