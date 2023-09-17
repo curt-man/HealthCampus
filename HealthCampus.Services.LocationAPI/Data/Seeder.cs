@@ -9,10 +9,10 @@ namespace HealthCampus.Services.LocationAPI.Data
         private readonly LocationDbContext _context;
         private readonly Random _random;
 
-        public Seeder(LocationDbContext context, Random random)
+        public Seeder(LocationDbContext context)
         {
             _context = context;
-            _random = random;
+            _random = new Random();
         }
 
         private void SeedAddresses()
@@ -90,7 +90,7 @@ namespace HealthCampus.Services.LocationAPI.Data
         //}
 
 
-        public void Seed()
+        public void SeedData()
         {
             SeedAddresses();
         }
