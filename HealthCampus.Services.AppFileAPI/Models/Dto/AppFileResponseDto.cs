@@ -45,6 +45,9 @@ namespace HealthCampus.Services.AppFileAPI.Models.Dto
         /// </summary>
         public string? ThumbnailUrl { get; set; }
 
-
+        internal static AppFileResponseDto FromAppFile(AppFile appFile)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
