@@ -1,6 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using HealthCampus.Services.AppFileAPI.Services;
+using HealthCampus.Services.AppFileAPI.Services.IService;
 
 namespace HealthCampus.Services.AppFileAPI.Services;
 

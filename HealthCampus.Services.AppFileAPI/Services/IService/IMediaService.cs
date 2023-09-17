@@ -1,4 +1,4 @@
-﻿namespace HealthCampus.Services.AppFileAPI.Services
+﻿namespace HealthCampus.Services.AppFileAPI.Services.IService
 {
     public interface IMediaService
     {

@@ -1,4 +1,5 @@
-﻿using MediaInfo;
+﻿using HealthCampus.Services.AppFileAPI.Services.IService;
+using MediaInfo;
 using System.Drawing;
 using System.Drawing.Imaging;
 

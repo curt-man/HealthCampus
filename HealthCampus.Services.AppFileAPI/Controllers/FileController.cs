@@ -3,7 +3,7 @@ using Azure.Core;
 using HealthCampus.CommonUtilities.Dto;
 using HealthCampus.Services.AppFileAPI.Data;
 using HealthCampus.Services.AppFileAPI.Models.Dto;
-using HealthCampus.Services.AppFileAPI.Services;
+using HealthCampus.Services.AppFileAPI.Services.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

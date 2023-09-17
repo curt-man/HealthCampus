@@ -7,20 +7,32 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using HealthCampus.Services.AppFileAPI.Utilities;
-using Microsoft.AspNetCore.Identity;
+using HealthCampus.Services.AppFileAPI.Services.IService;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
-builder.Services.AddSingleton(mapper);
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+#region Configuring AutoMapper
+
+// Just kidding, AutoMapper is a peace of shit.
+// We do mapping manually here.
+
+#endregion
+
+#region Configuring Database
+
+builder.Services.AddDbContext<AppFileDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AppFileDatabase")));
+builder.Services.AddSingleton(x =>
+    new BlobServiceClient(builder.Configuration.GetConnectionString("AzureStorageAccount")));
+
+#endregion
+
+#region Configuring JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -44,11 +56,10 @@ builder.Services.AddAuthentication(options =>
             RequireExpirationTime = false
         };
     });
+#endregion
 
-builder.Services.AddDbContext<AppFileDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AppFileDatabase")));
-builder.Services.AddSingleton(x =>
-    new BlobServiceClient(builder.Configuration.GetConnectionString("AzureStorageAccount")));
+
+
 builder.Services.AddSingleton<IBlobService, BlobService>();
 builder.Services.AddSingleton<IMediaService, MediaService>();
 
