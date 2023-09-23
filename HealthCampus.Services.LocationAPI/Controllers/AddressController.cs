@@ -1,5 +1,6 @@
 ﻿using HealthCampus.CommonUtilities.Dto;
 using HealthCampus.CommonUtilities.Enums;
+using HealthCampus.CommonUtilities.Utilities;
 using HealthCampus.Services.LocationAPI.Data;
 using HealthCampus.Services.LocationAPI.Models;
 using HealthCampus.Services.LocationAPI.Models.Dtos;
@@ -34,6 +35,7 @@ namespace HealthCampus.Services.LocationAPI.Controllers
 
         [HttpGet]
         [Route("")]
+        [Authorize(Policy = AccessPolicy.Indigo)]
         public async Task<ActionResult<ResponseDto>> GetAddressesAsync()
         {
             try

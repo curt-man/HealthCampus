@@ -1,4 +1,5 @@
-﻿using HealthCampus.Services.AppUserAPI.Models;
+﻿using HealthCampus.CommonUtilities.Enums;
+using HealthCampus.Services.AppUserAPI.Models;
 using HealthCampus.Services.AppUserAPI.Services.IServices;
 using HealthCampus.Services.AppUserAPI.Utilities;
 using Microsoft.Extensions.Options;
@@ -18,10 +19,11 @@ namespace HealthCampus.Services.AppUserAPI.Services
             _jwtConfig = jwtConfig.Value;
         }
 
-        public string GenerateToken(AppUser user)
+        public string GenerateToken(AppUser user, IEnumerable<string> roles)
         {
             var jwtHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtConfig.SecretKey);
+
             var listOfClaims = new List<Claim>()
             {
                 new Claim("Id", user.Id.ToString()),
@@ -31,12 +33,18 @@ namespace HealthCampus.Services.AppUserAPI.Services
                 new Claim(JwtRegisteredClaimNames.Aud, _jwtConfig.Audience),
                 new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
             };
+            foreach (var role in roles)
+            {
+                listOfClaims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(listOfClaims),
                 Expires = DateTime.UtcNow.Add(_jwtConfig.ExpirationTime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
+
             var securityToken = jwtHandler.CreateToken(tokenDescriptor);
             var jwt = jwtHandler.WriteToken(securityToken);
             return jwt;

@@ -92,7 +92,7 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
             {
                 AppUser registeredUser = await _appUserManager.Register(request);
 
-                await _appUserManager.AssignRoleTo(registeredUser, request.AppRole);
+                await _appUserManager.AssignRole(registeredUser, request.AppRole);
 
                 return Ok(_response);
 
@@ -123,12 +123,30 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
         }
 
         [HttpGet]
-        [Route("Delete/{appUserId}")]
-        public async Task<ActionResult<ResponseDto>> DeleteAsync(Guid appUserId)
+        [Route("Delete/Id/{id}")]
+        public async Task<ActionResult<ResponseDto>> DeleteAsync(Guid id)
         {
             try
             {
-                await _appUserManager.Delete(appUserId);
+                await _appUserManager.Delete(id);
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                SetErrorMessageToResponse(ex.Message);
+            }
+            return BadRequest(_response);
+        }
+
+
+        [HttpPost]
+        [Route("AssignRole")]
+        public async Task<ActionResult<ResponseDto>> Assign(AppUserAssignRoleRequestDto dto)
+        {
+            try
+            {
+                await _appUserManager.AssignRole(dto);
+
                 return Ok(_response);
             }
             catch (Exception ex)

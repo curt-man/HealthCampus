@@ -9,7 +9,8 @@ namespace HealthCampus.Services.AppUserAPI.Services.IServices
         Task<List<AppUserResponseDto>> GetAll();
         Task<AppUserResponseDto> Get(Guid id);
         Task<AppUserResponseDto> Get(string username);
-        Task AssignRoleTo(AppUser user, RolesEnum role);
+        Task AssignRole(AppUserAssignRoleRequestDto dto);
+        Task AssignRole(AppUser user, RolesEnum role);
         Task Delete(Guid appUserId);
         Task<string> LogIn(AppUser user, string password);
         Task<string> LogIn(AppUserLoginRequestDto request);
