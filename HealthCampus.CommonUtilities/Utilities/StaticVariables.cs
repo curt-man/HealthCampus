@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 
 namespace HealthCampus.CommonUtilities.Utilities
 {
-    //public static class StaticVariables
-    //{
-        
-    //}
+    
 
 }

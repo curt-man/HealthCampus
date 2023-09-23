@@ -13,7 +13,6 @@ namespace HealthCampus.CommonUtilities.Enums
         Employee = 3,
         User = 4,
         Guest = 5,
-
     }
     
 }

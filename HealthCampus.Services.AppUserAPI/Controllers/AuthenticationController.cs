@@ -39,7 +39,7 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
             {
                 AppUser registeredUser = await _appUserManager.Register(request);
 
-                await _appUserManager.AssignRoleTo(registeredUser, RolesEnum.User);
+                await _appUserManager.AssignRole(registeredUser, RolesEnum.User);
 
                 string token = await _appUserManager.LogIn(registeredUser, request.Password);
 

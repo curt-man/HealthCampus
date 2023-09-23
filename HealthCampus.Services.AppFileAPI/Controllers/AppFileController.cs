@@ -89,7 +89,6 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
                 if (file == null || file.Length == 0)
                 {
                     throw new ArgumentNullException(nameof(file), "File is not attached");
-
                 }
 
                 else

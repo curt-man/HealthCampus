@@ -32,7 +32,7 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{fileId}")]
+        [HttpGet("Get/Id/{id}")]
         public async Task<ResponseDto> GetFile(AppFileRequestDto request)
         {
             try
