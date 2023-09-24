@@ -27,7 +27,6 @@ namespace HealthCampus.Services.AppUserAPI.Services
             var listOfClaims = new List<Claim>()
             {
                 new Claim("Id", user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Name, $"{user.FirstName} {user.LastName}"),
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim(JwtRegisteredClaimNames.Iss, _jwtConfig.Issuer),
                 new Claim(JwtRegisteredClaimNames.Aud, _jwtConfig.Audience),

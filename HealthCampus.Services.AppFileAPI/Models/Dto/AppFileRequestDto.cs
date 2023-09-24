@@ -8,8 +8,6 @@ namespace HealthCampus.Services.AppFileAPI.Models.Dto
 {
     public class AppFileRequestDto
     {
-        [DefaultValue("ce5776b7-b67a-4ece-8000-7edc1e7bfb37")]
-        public Guid UserId { get; set; }
         [DefaultValue("studentdemostorage")]
         public string? StorageAccount { get; set; }
         [DefaultValue("profilepictures")]

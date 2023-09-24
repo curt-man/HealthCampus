@@ -81,8 +81,10 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
         {
             try
             {
-                // check if user exists
-                ////////////////////////
+                var appUserId = User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value;
+                if (appUserId == null)
+                    throw new Exception("User does not exist.");
+
                 AppFile? appFile;
                 IFormFile file = request.FormFile;
 
@@ -90,7 +92,7 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
                 {
                     throw new ArgumentNullException(nameof(file), "File is not attached");
                 }
-
+                
                 else
                 {
                     Guid appFileGuid;
@@ -101,7 +103,7 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
                         {
                             Id = appFileGuid,
                             UploadedAt = DateTime.UtcNow,
-                            UploadedByUserId = request.UserId
+                            UploadedByUserId = new Guid(appUserId)
                         };
                     }
                     else
@@ -117,7 +119,7 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
                         else
                         {
                             appFile.ModifiedAt = DateTime.UtcNow;
-                            appFile.ModifiedByUserId = request.UserId;
+                            appFile.ModifiedByUserId = new Guid(appUserId);
                         }
 
                     }

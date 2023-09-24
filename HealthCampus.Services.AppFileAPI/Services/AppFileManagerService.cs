@@ -8,7 +8,7 @@ using System.Data.Entity;
 
 namespace HealthCampus.Services.AppFileAPI.Services
 {
-    public class AppFileManagerService
+    public class AppFileManagerService : IAppFileManagerService
     {
         private readonly IBlobService _blobService;
         private readonly IMediaService _mediaService;
