@@ -8,6 +8,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using HealthCampus.Services.AppFileAPI.Utilities;
 using HealthCampus.Services.AppFileAPI.Services.IService;
+using HealthCampus.CommonUtilities.Enums;
+using HealthCampus.CommonUtilities.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +34,9 @@ builder.Services.AddSingleton(x =>
 
 #endregion
 
-#region Configuring JWT Authentication
+
+#region Configuring Identity
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -52,11 +56,49 @@ builder.Services.AddAuthentication(options =>
             ValidateAudience = true,
             ValidAudience = builder.Configuration.GetSection("JwtConfig:Audience").Value!,
             ValidateLifetime = true,
-            // For dev purposes.
-            RequireExpirationTime = false
+            RequireExpirationTime = true
         };
     });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(AccessPolicy.Violet,
+        policy => policy.RequireRole(
+            RolesEnum.Admin.ToString()));
+    options.AddPolicy(AccessPolicy.Indigo,
+        policy => policy.RequireRole(
+            RolesEnum.Admin.ToString(),
+            RolesEnum.SysAdmin.ToString()));
+    options.AddPolicy(AccessPolicy.Blue,
+        policy => policy.RequireRole(
+            RolesEnum.Admin.ToString(),
+            RolesEnum.SysAdmin.ToString()));
+    options.AddPolicy(AccessPolicy.Green,
+        policy => policy.RequireRole(
+            RolesEnum.Admin.ToString(),
+            RolesEnum.SysAdmin.ToString(),
+            RolesEnum.Employee.ToString()));
+    options.AddPolicy(AccessPolicy.Yellow,
+        policy => policy.RequireRole(
+            RolesEnum.Admin.ToString(),
+            RolesEnum.SysAdmin.ToString(),
+            RolesEnum.Employee.ToString()));
+    options.AddPolicy(AccessPolicy.Orange,
+        policy => policy.RequireRole(
+            RolesEnum.Admin.ToString(),
+            RolesEnum.SysAdmin.ToString(),
+            RolesEnum.Employee.ToString(),
+            RolesEnum.User.ToString()));
+    options.AddPolicy(AccessPolicy.Red,
+        policy => policy.RequireRole(
+            RolesEnum.Admin.ToString(),
+            RolesEnum.SysAdmin.ToString(),
+            RolesEnum.Employee.ToString(),
+            RolesEnum.User.ToString(),
+            RolesEnum.Guest.ToString()));
+});
 #endregion
+
 
 
 
