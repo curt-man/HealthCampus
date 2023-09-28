@@ -24,6 +24,7 @@ builder.Services.AddDbContext<LocationDbContext>(options =>
 #endregion
 
 #region Configuring Identity
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -43,8 +44,7 @@ builder.Services.AddAuthentication(options =>
             ValidateAudience = true,
             ValidAudience = builder.Configuration.GetSection("JwtConfig:Audience").Value!,
             ValidateLifetime = true,
-            // For dev purposes.
-            RequireExpirationTime = false
+            RequireExpirationTime = true
         };
     });
 
