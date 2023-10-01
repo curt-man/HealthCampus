@@ -357,7 +357,7 @@ namespace HealthCampus.Services.AppFileAPI.Migrations
                         new
                         {
                             Id = (byte)58,
-                            Description = "Matroska Multimedia Container",
+                            Description = "Matroska Multimedia BlobContainer",
                             Extension = ".mkv",
                             MediaType = "video",
                             SubType = "x-matroska"

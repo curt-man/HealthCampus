@@ -94,7 +94,7 @@ namespace HealthCampus.Services.AppFileAPI.Migrations
                     { (byte)55, "MPEG", ".mp4", "video", "mp4" },
                     { (byte)56, "Ogg", ".ogg", "video", "ogg" },
                     { (byte)57, "MPEG-4 Part 14 video file format", ".m4v", "video", "x-m4v" },
-                    { (byte)58, "Matroska Multimedia Container", ".mkv", "video", "x-matroska" },
+                    { (byte)58, "Matroska Multimedia BlobContainer", ".mkv", "video", "x-matroska" },
                     { (byte)61, "MPEG-1 or MPEG-2 Audio Layer III", ".mp3", "audio", "mpeg" },
                     { (byte)62, "Waveform Audio File Format", ".wav", "audio", "wav" },
                     { (byte)63, "Windows Media Audio", ".wma", "audio", "x-ms-wma" },

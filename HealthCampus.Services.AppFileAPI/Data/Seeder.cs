@@ -55,7 +55,7 @@ namespace HealthCampus.Services.AppFileAPI.Data
                 new FileContentType { Id = 55, MediaType = "video", SubType = "mp4", Extension = ".mp4", Description = "MPEG" },
                 new FileContentType { Id = 56, MediaType = "video", SubType = "ogg", Extension = ".ogg", Description = "Ogg" },
                 new FileContentType { Id = 57, MediaType = "video", SubType = "x-m4v", Extension = ".m4v", Description = "MPEG-4 Part 14 video file format" },
-                new FileContentType { Id = 58, MediaType = "video", SubType = "x-matroska", Extension = ".mkv", Description = "Matroska Multimedia Container" },
+                new FileContentType { Id = 58, MediaType = "video", SubType = "x-matroska", Extension = ".mkv", Description = "Matroska Multimedia BlobContainer" },
 
                 //Audio formats
                 new FileContentType { Id = 61, MediaType = "audio", SubType = "mpeg", Extension = ".mp3", Description = "MPEG-1 or MPEG-2 Audio Layer III" },

@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace HealthCampus.Services.AppFileAPI.Models.Dto
+﻿namespace HealthCampus.Services.AppFileAPI.Models.Dto
 {
     public class AppFileResponseDto
     {
@@ -45,9 +42,20 @@ namespace HealthCampus.Services.AppFileAPI.Models.Dto
         /// </summary>
         public string? ThumbnailUrl { get; set; }
 
-        internal static AppFileResponseDto FromAppFile(AppFile appFile)
+        public static AppFileResponseDto FromAppFile(AppFile appFile)
         {
-            throw new NotImplementedException();
+            var appFileDto = new AppFileResponseDto()
+            {
+                Id = appFile.Id,
+                OriginalName = appFile.OriginalName,
+                ContentType = appFile.ContentType,
+                Size = appFile.Size,
+                Duration = appFile.Duration,
+                Url = appFile.Url,
+                DownloadUrl = appFile.DownloadUrl,
+                ThumbnailUrl = appFile.ThumbnailUrl
+            };
+            return appFileDto;
         }
     }
 }
