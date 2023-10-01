@@ -4,6 +4,7 @@ using HealthCampus.CommonUtilities.Dto;
 using HealthCampus.Services.AppFileAPI.Data;
 using HealthCampus.Services.AppFileAPI.Models.Dto;
 using HealthCampus.Services.AppFileAPI.Services.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,38 +14,29 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
     [ApiController]
     public class FileController : ControllerBase
     {
-        private ResponseDto response = new ResponseDto();
 
-        private void SetErrorMessageToResponse(string message)
+        private readonly IAppFileManagerService _appFileManager;
+
+        public FileController(IAppFileManagerService appFileManager)
         {
-            response.IsSuccess = false;
-            response.Message = message;
+            _appFileManager = appFileManager;
         }
 
-        private readonly IBlobService _blobService;
-        private readonly AppFileDbContext _context;
-        private readonly IMapper _mapper;
-
-        public FileController(IBlobService blobService, AppFileDbContext appFileDbContext, IMapper mapper)
+        [HttpGet]
+        [Route("Download/Id/{id}")]
+        public async Task<FileContentResult?> Download(Guid id)
         {
-            _blobService = blobService;
-            _context = appFileDbContext;
-            _mapper = mapper;
-        }
-
-        [HttpGet("Get/Id/{id}")]
-        public async Task<ResponseDto> GetFile(AppFileRequestDto request)
-        {
+            FileContentResult? result = null;
             try
             {
-                var blob = await _blobService.GetBlobAsync(request.BlobName.ToString()!, request.Container);
-                response.Result = File(blob.Content.ToArray(), blob.Details.ContentType);
+                var file = await _appFileManager.DownloadAsync(id);
+                result = file;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                SetErrorMessageToResponse(ex.Message);
+
             }
-            return response;
+            return result;
         }
 
 

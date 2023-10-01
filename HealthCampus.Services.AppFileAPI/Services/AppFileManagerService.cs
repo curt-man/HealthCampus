@@ -1,10 +1,19 @@
 ﻿using AutoMapper;
+using Azure;
+using Azure.Core;
+using Azure.Storage.Blobs.Models;
+using HealthCampus.CommonUtilities.Dto;
 using HealthCampus.Services.AppFileAPI.Controllers;
 using HealthCampus.Services.AppFileAPI.Data;
+using HealthCampus.Services.AppFileAPI.Models;
 using HealthCampus.Services.AppFileAPI.Models.Dto;
 using HealthCampus.Services.AppFileAPI.Services.IService;
+using HealthCampus.Services.AppFileAPI.Utilities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Data.Entity;
+using System.Data.Entity.Core;
 
 namespace HealthCampus.Services.AppFileAPI.Services
 {
@@ -12,20 +21,18 @@ namespace HealthCampus.Services.AppFileAPI.Services
     {
         private readonly IBlobService _blobService;
         private readonly IMediaService _mediaService;
-        private readonly IMapper _mapper;
         private readonly ILogger<AppFileController> _logger;
         private readonly AppFileDbContext _dbContext;
 
-        public AppFileManagerService(IBlobService blobService, IMediaService mediaService, IMapper mapper, ILogger<AppFileController> logger, AppFileDbContext dbContext)
+        public AppFileManagerService(IBlobService blobService, IMediaService mediaService, ILogger<AppFileController> logger, AppFileDbContext dbContext)
         {
             _blobService = blobService;
             _mediaService = mediaService;
-            _mapper = mapper;
             _logger = logger;
             _dbContext = dbContext;
         }
 
-        public async Task<List<AppFileResponseDto>> GetAppFilesAsync()
+        public async Task<List<AppFileResponseDto>> GetAllAsync()
         {
             var appFiles = new List<AppFileResponseDto>();
             await foreach (var appFile in _dbContext.AppFiles.AsAsyncEnumerable())
@@ -33,7 +40,138 @@ namespace HealthCampus.Services.AppFileAPI.Services
                 appFiles.Add(AppFileResponseDto.FromAppFile(appFile));
             }
             return appFiles;
+        }
+
+        public AppFileResponseDto Get(Guid appFileId)
+        {
+            var appFile = _dbContext.AppFiles.FirstOrDefault(x => x.Id == appFileId);
+
+            if (appFile == null)
+                throw new Exception("File not found");
+
+            var dto = AppFileResponseDto.FromAppFile(appFile);
+
+            return dto;
+        }
+
+        public async Task<Guid> UploadAsync(AppFileRequestDto dto, Guid appUserId)
+        {
+            if (dto == null)
+                throw new ArgumentNullException(nameof(dto), "Invalid dto");
+
+            AppFile? appFile;
+
+            IFormFile file = dto.FormFile;
+            if (file == null || file.Length == 0)
+                throw new ArgumentNullException(nameof(file), "File is not attached");
+
+            Guid appFileGuid;
+            if (dto.BlobName == null)
+            {
+                appFileGuid = Guid.NewGuid();
+                appFile = new AppFile()
+                {
+                    Id = appFileGuid,
+                    UploadedAt = DateTime.UtcNow,
+                    UploadedByUserId = appUserId
+                };
+            }
+            else
+            {
+                appFileGuid = (Guid)(dto.BlobName);
+                appFile = _dbContext.AppFiles.FirstOrDefault(x => x.Id == dto.BlobName);
+                if (appFile == null)
+                {
+                    throw new ObjectNotFoundException("File not found");
+                }
+                else
+                {
+                    appFile.ModifiedAt = DateTime.UtcNow;
+                    appFile.ModifiedByUserId = appUserId;
+                }
+
+            }
+
+            int fileSize = Convert.ToInt32(file.Length / 1024L);
+            string fileOriginalName = file.FileName;
+            string fileExtension = Path.GetExtension(file.FileName);
+
+            FileContentType? fileContentType = _dbContext.FileContentTypes.FirstOrDefault(x => x.Extension == fileExtension);
+            if (fileContentType == null)
+            {
+                throw new ArgumentException(nameof(file), "File extension is not supported");
+            }
+
+            if (fileContentType.MediaType == MediaType.Audio || fileContentType.MediaType == MediaType.Video)
+            {
+                using (var stream = file.OpenReadStream())
+                {
+                    int fileDuration = _mediaService.GetMediaFileDuration(stream, _logger);
+                    appFile.Duration = fileDuration;
+                }
+            }
+
+            // It should compress image but it's not working
+            //if (fileContentType.MediaType == MediaType.Image)
+            //{
+            //    using (Stream compressedImage = _mediaService.CompressImage(file.OpenReadStream()))
+            //    {
+            //        await _blobService.UploadFileBlobAsync(appFileGuid.ToString(), compressedImage, file.ContentType, request.BlobContainer);
+            //        appFile.ThumbnailUrl = $"https://studentdemostorage.blob.core.windows.net/{request.BlobContainer}/{appFileGuid}.thumbnail";
+            //    }
+            //}
+
+            await _blobService.UploadFileBlobAsync(appFileGuid.ToString(), file.OpenReadStream(), file.ContentType, dto.BlobContainer);
+            appFile.Url = $"https://studentdemostorage.blob.core.windows.net/{dto.BlobContainer}/{appFileGuid}";
+
+            appFile.BlobContainer = dto.BlobContainer;
+            appFile.ContentTypeId = fileContentType.Id;
+            appFile.OriginalName = fileOriginalName;
+            appFile.Size = fileSize;
+
+            if (dto.BlobName == null)
+            {
+                await _dbContext.AppFiles.AddAsync(appFile);
+            }
+            else
+            {
+                _dbContext.AppFiles.Update(appFile);
+            }
+            await _dbContext.SaveChangesAsync();
+
+            return appFileGuid;
+        }
+
+
+
+        public async Task DeleteAsync(Guid appFileId, Guid appUserId)
+        {
+            var appFile = _dbContext.AppFiles.FirstOrDefault(x=>x.Id == appFileId);
+            if (appFile == null)
+                throw new Exception("File not found");
+
+            await _blobService.DeleteBlobAsync(appFile.Id.ToString(), appFile.BlobContainer);
+
+            _dbContext.AppFiles.Remove(appFile);
+
+            await _dbContext.SaveChangesAsync();
 
         }
+
+        public async Task<FileContentResult?> DownloadAsync(Guid id)
+        {
+            var appFile = _dbContext.AppFiles.FirstOrDefault(x => x.Id == id);
+            if (appFile == null)
+                throw new Exception("File not found");
+
+            var blob = await _blobService.GetBlobAsync(appFile.Id.ToString(), appFile.BlobContainer);
+
+            FileContentResult file = new FileContentResult(blob.Content.ToArray(), blob.Details.ContentType);
+            file.FileDownloadName = appFile.OriginalName;
+            file.LastModified = appFile.ModifiedAt;
+
+            return file;
+        }
+
     }
 }
