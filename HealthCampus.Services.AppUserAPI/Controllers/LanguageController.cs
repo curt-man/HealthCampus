@@ -28,7 +28,7 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult<ResponseDto>> GetLanguagesAsync()
+        public async Task<ActionResult<ResponseDto>> GetLanguages()
         {
             try
             {

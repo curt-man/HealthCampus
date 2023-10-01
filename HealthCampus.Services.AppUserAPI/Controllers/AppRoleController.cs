@@ -31,7 +31,7 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult<ResponseDto>> GetAppRolesAsync()
+        public async Task<ActionResult<ResponseDto>> GetAppRoles()
         {
             try
             {

@@ -28,7 +28,7 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult<ResponseDto>> GetGendersAsync()
+        public async Task<ActionResult<ResponseDto>> GetGenders()
         {
             try
             {

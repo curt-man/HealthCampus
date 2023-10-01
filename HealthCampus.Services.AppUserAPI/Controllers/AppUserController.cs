@@ -34,11 +34,11 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult<ResponseDto>> GetAppUsersAsync()
+        public async Task<ActionResult<ResponseDto>> GetAppUsers()
         {
             try
             {
-                var users = await _appUserManager.GetAll();
+                var users = await _appUserManager.GetAllAsync();
                 _response.Result = users;
                 return Ok(_response);
             }
@@ -51,11 +51,11 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
         [HttpGet]
         [Route("Get/Id/{id}")]
-        public async Task<ActionResult<ResponseDto>> GetAsync(Guid id)
+        public async Task<ActionResult<ResponseDto>> Get(Guid id)
         {
             try
             {
-                var user = await _appUserManager.Get(id);
+                var user = await _appUserManager.GetAsync(id);
                 _response.Result = user;
                 return Ok(_response);
             }
@@ -68,11 +68,11 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
         [HttpGet]
         [Route("Get/Username/{username}")]
-        public async Task<ActionResult<ResponseDto>> GetAsync(string username)
+        public async Task<ActionResult<ResponseDto>> Get(string username)
         {
             try
             {
-                var user = await _appUserManager.Get(username);
+                var user = await _appUserManager.GetAsync(username);
                 _response.Result = user;
                 return Ok(_response);
             }
@@ -85,14 +85,14 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
 
         [HttpPost]
-        [Route("Add")]
-        public async Task<ActionResult<ResponseDto>> CreateAsync([FromBody] AdminAppUserRegisterRequestDto request)
+        [Route("Create")]
+        public async Task<ActionResult<ResponseDto>> Create([FromBody] AdminAppUserRegisterRequestDto request)
         {
             try
             {
-                AppUser registeredUser = await _appUserManager.Register(request);
+                AppUser registeredUser = await _appUserManager.RegisterAsync(request);
 
-                await _appUserManager.AssignRole(registeredUser, request.AppRole);
+                await _appUserManager.AssignRoleAsync(registeredUser, request.AppRole);
 
                 return Ok(_response);
 
@@ -106,11 +106,11 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
         [HttpPut]
         [Route("Update")]
-        public async Task<ActionResult<ResponseDto>> UpdateAsync([FromBody] AppUserUpdateRequestDto request)
+        public async Task<ActionResult<ResponseDto>> Update([FromBody] AppUserUpdateRequestDto request)
         {
             try
             {
-                await _appUserManager.Update(request);
+                await _appUserManager.UpdateAsync(request);
 
                 return Ok(_response);
 
@@ -124,11 +124,11 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
         [HttpGet]
         [Route("Delete/Id/{id}")]
-        public async Task<ActionResult<ResponseDto>> DeleteAsync(Guid id)
+        public async Task<ActionResult<ResponseDto>> Delete(Guid id)
         {
             try
             {
-                await _appUserManager.Delete(id);
+                await _appUserManager.DeleteAsync(id);
                 return Ok(_response);
             }
             catch (Exception ex)
@@ -141,11 +141,11 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
         [HttpPost]
         [Route("AssignRole")]
-        public async Task<ActionResult<ResponseDto>> Assign(AppUserAssignRoleRequestDto dto)
+        public async Task<ActionResult<ResponseDto>> AssignRole(AppUserAssignRoleRequestDto dto)
         {
             try
             {
-                await _appUserManager.AssignRole(dto);
+                await _appUserManager.AssignRoleAsync(dto);
 
                 return Ok(_response);
             }

@@ -1,14 +1,10 @@
 ﻿using HealthCampus.CommonUtilities.Dto;
-using HealthCampus.CommonUtilities.Enums;
 using HealthCampus.CommonUtilities.Utilities;
 using HealthCampus.Services.LocationAPI.Data;
-using HealthCampus.Services.LocationAPI.Models;
 using HealthCampus.Services.LocationAPI.Models.Dtos;
-using HealthCampus.Services.LocationAPI.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace HealthCampus.Services.LocationAPI.Controllers
 {
@@ -36,7 +32,7 @@ namespace HealthCampus.Services.LocationAPI.Controllers
         [HttpGet]
         [Route("")]
         [Authorize(Policy = AccessPolicy.Indigo)]
-        public async Task<ActionResult<ResponseDto>> GetAddressesAsync()
+        public async Task<ActionResult<ResponseDto>> GetAddresses()
         {
             try
             {
@@ -54,7 +50,7 @@ namespace HealthCampus.Services.LocationAPI.Controllers
         [HttpGet]
         [Route("Get/Id/{id}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto>> GetAsync(Guid id)
+        public async Task<ActionResult<ResponseDto>> Get(Guid id)
         {
             try
             {
@@ -76,7 +72,7 @@ namespace HealthCampus.Services.LocationAPI.Controllers
 
         [HttpPost]
         [Route("Create")]
-        public async Task<ActionResult<ResponseDto>> CreateAsync([FromBody] AddressCreateDto dto)
+        public async Task<ActionResult<ResponseDto>> Create([FromBody] AddressCreateDto dto)
         {
             try
             {
@@ -94,7 +90,7 @@ namespace HealthCampus.Services.LocationAPI.Controllers
 
         [HttpPut]
         [Route("Update")]
-        public async Task<ActionResult<ResponseDto>> UpdateAsync([FromBody] AddressUpdateDto dto)
+        public async Task<ActionResult<ResponseDto>> Update([FromBody] AddressUpdateDto dto)
         {
             try
             {
@@ -112,7 +108,7 @@ namespace HealthCampus.Services.LocationAPI.Controllers
 
         [HttpDelete]
         [Route("Delete/Id/{id}")]
-        public async Task<ActionResult<ResponseDto>> DeleteAsync(Guid id)
+        public async Task<ActionResult<ResponseDto>> Delete(Guid id)
         {
             try
             {

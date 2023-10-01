@@ -23,7 +23,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
         }
 
 
-        public async Task<List<AppUserResponseDto>> GetAll()
+        public async Task<List<AppUserResponseDto>> GetAllAsync()
         {
             var users = new List<AppUserResponseDto>();
             await foreach (var user in _userManager.Users.AsAsyncEnumerable())
@@ -33,7 +33,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             return users;
         }
 
-        public async Task<AppUserResponseDto> Get(Guid id)
+        public async Task<AppUserResponseDto> GetAsync(Guid id)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
             if (user == null)
@@ -44,7 +44,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             return dto;
         }
 
-        public async Task<AppUserResponseDto> Get(string username)
+        public async Task<AppUserResponseDto> GetAsync(string username)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == username);
             if (user == null)
@@ -55,7 +55,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             return dto;
         }
 
-        public async Task<AppUser> Register<T>(T request) where T : IAppUserRegisterRequestDto
+        public async Task<AppUser> RegisterAsync<T>(T request) where T : IAppUserRegisterRequestDto
         {
             var user = await _userManager.FindByEmailAsync(request.EmailAddress);
             if (user != null)
@@ -80,7 +80,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             return user;
         }
 
-        public async Task AssignRole(AppUserAssignRoleRequestDto dto)
+        public async Task AssignRoleAsync(AppUserAssignRoleRequestDto dto)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == dto.UserId);
             if(user==null)
@@ -101,7 +101,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             }
         }
 
-        public async Task AssignRole(AppUser user, RolesEnum role)
+        public async Task AssignRoleAsync(AppUser user, RolesEnum role)
         {
 
             var result = await _userManager.AddToRoleAsync(user, role.ToString());
@@ -117,7 +117,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             }
         }
 
-        public async Task<string> LogIn(AppUserLoginRequestDto request)
+        public async Task<string> LogInAsync(AppUserLoginRequestDto request)
         {
             AppUser? user = request.EmailOrUsername.Contains("@")
                 ? await _userManager.FindByEmailAsync(request.EmailOrUsername)
@@ -143,7 +143,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
         }
 
 
-        public async Task<string> LogIn(AppUser user, string password)
+        public async Task<string> LogInAsync(AppUser user, string password)
         {
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -159,7 +159,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             return token;
         }
 
-        public async Task Update(AppUserUpdateRequestDto dto)
+        public async Task UpdateAsync(AppUserUpdateRequestDto dto)
         {
             AppUser user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == dto.Id);
             if(user == null)
@@ -182,7 +182,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
 
         }
 
-        public async Task Delete(Guid appUserId)
+        public async Task DeleteAsync(Guid appUserId)
         {
             AppUser user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == appUserId);
             if (user == null)

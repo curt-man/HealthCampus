@@ -29,7 +29,7 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult<ResponseDto>> GetProficienciesAsync()
+        public async Task<ActionResult<ResponseDto>> GetProficiencies()
         {
             try
             {

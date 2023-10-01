@@ -33,15 +33,15 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
 
         [HttpPost]
         [Route("Register")]
-        public async Task<ActionResult<ResponseDto>> RegisterAsync([FromBody] AppUserRegisterRequestDto request)
+        public async Task<ActionResult<ResponseDto>> Register([FromBody] AppUserRegisterRequestDto request)
         {
             try
             {
-                AppUser registeredUser = await _appUserManager.Register(request);
+                AppUser registeredUser = await _appUserManager.RegisterAsync(request);
 
-                await _appUserManager.AssignRole(registeredUser, RolesEnum.User);
+                await _appUserManager.AssignRoleAsync(registeredUser, RolesEnum.User);
 
-                string token = await _appUserManager.LogIn(registeredUser, request.Password);
+                string token = await _appUserManager.LogInAsync(registeredUser, request.Password);
 
                 _response.Result = token;
             }
@@ -52,12 +52,13 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
             return Ok(_response);
         }
 
-        [HttpPost("Login")]
-        public async Task<ResponseDto> LoginAsync([FromBody] AppUserLoginRequestDto request)
+        [HttpPost]
+        [Route("Login")]
+        public async Task<ResponseDto> Login([FromBody] AppUserLoginRequestDto request)
         {
             try
             {
-                var token = await _appUserManager.LogIn(request);
+                var token = await _appUserManager.LogInAsync(request);
                 _response.Result = token;
             }
             catch (Exception ex)

@@ -6,16 +6,16 @@ namespace HealthCampus.Services.AppUserAPI.Services.IServices
 {
     public interface IAppUserManagerService
     {
-        Task<List<AppUserResponseDto>> GetAll();
-        Task<AppUserResponseDto> Get(Guid id);
-        Task<AppUserResponseDto> Get(string username);
-        Task AssignRole(AppUserAssignRoleRequestDto dto);
-        Task AssignRole(AppUser user, RolesEnum role);
-        Task Delete(Guid appUserId);
-        Task<string> LogIn(AppUser user, string password);
-        Task<string> LogIn(AppUserLoginRequestDto request);
-        Task<AppUser> Register<T>(T request) where T : IAppUserRegisterRequestDto;
-        Task Update(AppUserUpdateRequestDto request);
+        Task<List<AppUserResponseDto>> GetAllAsync();
+        Task<AppUserResponseDto> GetAsync(Guid id);
+        Task<AppUserResponseDto> GetAsync(string username);
+        Task AssignRoleAsync(AppUserAssignRoleRequestDto dto);
+        Task AssignRoleAsync(AppUser user, RolesEnum role);
+        Task DeleteAsync(Guid appUserId);
+        Task<string> LogInAsync(AppUser user, string password);
+        Task<string> LogInAsync(AppUserLoginRequestDto request);
+        Task<AppUser> RegisterAsync<T>(T request) where T : IAppUserRegisterRequestDto;
+        Task UpdateAsync(AppUserUpdateRequestDto request);
 
     }
 }
