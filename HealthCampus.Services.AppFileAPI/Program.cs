@@ -10,6 +10,7 @@ using HealthCampus.Services.AppFileAPI.Utilities;
 using HealthCampus.Services.AppFileAPI.Services.IService;
 using HealthCampus.CommonUtilities.Enums;
 using HealthCampus.CommonUtilities.Utilities;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,7 +34,6 @@ builder.Services.AddSingleton(x =>
     new BlobServiceClient(builder.Configuration.GetConnectionString("AzureStorageAccount")));
 
 #endregion
-
 
 #region Configuring Identity
 
@@ -99,9 +99,39 @@ builder.Services.AddAuthorization(options =>
 });
 #endregion
 
+#region Configure Swagger
 
+builder.Services.AddSwaggerGen(setup =>
+{
+    // Include 'SecurityScheme' to use JWT Authentication
+    var jwtSecurityScheme = new OpenApiSecurityScheme
+    {
+        BearerFormat = "JWT",
+        Name = "JWT Authentication",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = JwtBearerDefaults.AuthenticationScheme,
+        Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
 
+        Reference = new OpenApiReference
+        {
+            Id = JwtBearerDefaults.AuthenticationScheme,
+            Type = ReferenceType.SecurityScheme
+        }
+    };
 
+    setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+    setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        { jwtSecurityScheme, Array.Empty<string>() }
+    });
+
+});
+
+#endregion
+
+builder.Services.AddScoped<IAppFileManagerService, AppFileManagerService>();
 builder.Services.AddSingleton<IBlobService, BlobService>();
 builder.Services.AddSingleton<IMediaService, MediaService>();
 
