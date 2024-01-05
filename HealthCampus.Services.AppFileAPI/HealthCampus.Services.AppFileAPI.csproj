@@ -14,8 +14,6 @@
     <PackageReference Include="Azure.Storage.Blobs" Version="12.17.0" />
     <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="MediaInfo.Wrapper.Core" Version="21.9.3" />
-    <PackageReference Include="microsoft.aspnetcore.authentication.jwtbearer" Version="7.0.10" />
-    <PackageReference Include="microsoft.aspnetcore.identity.entityframeworkcore" Version="7.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">

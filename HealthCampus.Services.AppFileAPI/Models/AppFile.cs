@@ -15,6 +15,7 @@ namespace HealthCampus.Services.AppFileAPI.Models
         /// </summary>
         [Key]
         public Guid Id { get; set; }
+
         /// <summary>
         /// The container in which the blob is stored.
         /// </summary>
@@ -37,7 +38,7 @@ namespace HealthCampus.Services.AppFileAPI.Models
         /// <summary>
         /// The content type of the file.
         /// </summary>
-        [ForeignKey("ContentTypeId")]
+        [ForeignKey(nameof(ContentTypeId))]
         public FileContentType? ContentType { get; set; }
 
         /// <summary>
@@ -72,19 +73,23 @@ namespace HealthCampus.Services.AppFileAPI.Models
         /// </summary>
         [Required]
         public DateTime UploadedAt { get; set; }
+
         /// <summary>
         /// The unique identifier of the user who uploaded the file.
         /// </summary>
         [Required]
         public Guid UploadedByUserId { get; set; }
+
         /// <summary>
         /// The date the file was last modified (if applicable).
         /// </summary>
         public DateTime? ModifiedAt { get; set; }
+
         /// <summary>
         /// The unique identifier of the user who last modified the file (if applicable).
         /// </summary>
         public Guid? ModifiedByUserId { get; set; }
+
         /// <summary>
         /// Whether the file is publicly accessible.
         /// </summary>

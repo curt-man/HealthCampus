@@ -21,12 +21,10 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
             _response.Message = message;
         }
 
-        private readonly AppUserDbContext _dbContext;
         private readonly IAppUserManagerService _appUserManager;
 
-        public AuthenticationController(AppUserDbContext AppUserDbContext, IAppUserManagerService appUserManagement)
+        public AuthenticationController(IAppUserManagerService appUserManagement)
         {
-            _dbContext = AppUserDbContext;
             _response = new ResponseDto();
             _appUserManager = appUserManagement;
         }

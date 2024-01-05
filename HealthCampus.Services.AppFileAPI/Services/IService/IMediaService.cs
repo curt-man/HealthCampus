@@ -3,6 +3,6 @@
     public interface IMediaService
     {
         public Stream CompressImage(Stream imageStream);
-        public int GetMediaFileDuration(Stream fileContentStream, ILogger logger);
+        public int GetMediaFileDuration(Stream fileContentStream);
     }
 }

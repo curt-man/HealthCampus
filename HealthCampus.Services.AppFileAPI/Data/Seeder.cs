@@ -78,10 +78,5 @@ namespace HealthCampus.Services.AppFileAPI.Data
             SeedFileContentTypes();
         }
 
-        Stack<int> getRandomNumberStack(int minValue, int maxValue)
-        {
-            Stack<int> numbers = new Stack<int>(Enumerable.Range(minValue, maxValue).OrderBy(x => _random.Next()).Take(maxValue - minValue));
-            return numbers;
-        }
     }
 }

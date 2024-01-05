@@ -26,32 +26,5 @@ namespace HealthCampus.CommonUtilities.Attributes
             Text = text;
         }
 
-        //public EnumDescriptionAttribute(Type resourceManagerProvider, string resourceKey)
-        //{
-        //    Text = Utils.LookupResource(resourceManagerProvider, resourceKey);
-        //}
-
-        //internal class Utils
-        //{
-        //    /// <summary>
-        //    /// Получение значения из ресурса
-        //    /// </summary>
-        //    /// <param name="resourceManagerProvider"></param>
-        //    /// <param name="resourceKey"></param>
-        //    /// <returns></returns>
-        //    internal static string LookupResource(Type resourceManagerProvider, string resourceKey)
-        //    {
-        //        foreach (PropertyInfo staticProperty in resourceManagerProvider.GetProperties())
-        //        {
-        //            if (staticProperty.PropertyType == typeof(System.Resources.ResourceManager))
-        //            {
-        //                var resourceManager = (System.Resources.ResourceManager)staticProperty.GetValue(null, null);
-        //                return resourceManager.GetString(resourceKey);
-        //            }
-        //        }
-
-        //        return resourceKey; // Fallback with the key name
-        //    }
-        //}
     }
 }

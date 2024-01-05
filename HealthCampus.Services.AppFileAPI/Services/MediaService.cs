@@ -7,9 +7,9 @@ namespace HealthCampus.Services.AppFileAPI.Services
 {
     public class MediaService : IMediaService
     {
-        public int GetMediaFileDuration(Stream fileContentStream, ILogger logger)
+        public int GetMediaFileDuration(Stream fileContentStream)
         {
-            var file = new MediaInfoWrapper(fileContentStream, logger);
+            var file = new MediaInfoWrapper(fileContentStream);
 
             if (!file.Success)
             {

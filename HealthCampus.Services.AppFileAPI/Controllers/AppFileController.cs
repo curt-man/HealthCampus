@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using HealthCampus.Services.AppFileAPI.Data;
 using HealthCampus.Services.AppFileAPI.Models;
-using HealthCampus.Services.AppFileAPI.Models.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +14,7 @@ using HealthCampus.Services.AppFileAPI.Services.IService;
 using Microsoft.AspNetCore.Authorization;
 using HealthCampus.Services.AppFileAPI.Services;
 using System.Data.Entity;
+using HealthCampus.Services.AppFileAPI.Dtos;
 
 namespace HealthCampus.Services.AppFileAPI.Controllers
 {
@@ -57,11 +57,11 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
 
         [HttpGet]
         [Route("Get/Id/{id}")]
-        public ResponseDto Get(Guid id)
+        public async Task<ResponseDto> Get(Guid id)
         {
             try
             {
-                var appFile = _appFileManager.Get(id);
+                var appFile = await _appFileManager.GetAsync(id);
 
                 response.Result = appFile;
             }

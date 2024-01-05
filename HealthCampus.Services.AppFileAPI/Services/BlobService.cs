@@ -22,9 +22,9 @@ public class BlobService : IBlobService
         return blob;
     }
 
-    public async Task UploadFileBlobAsync(string blobName, Stream blobStreamData, string blobContentType, string container)
+    public async Task UploadFileBlobAsync(string blobName, Stream blobStreamData, string blobContentType, string containerName)
     {
-        var containerClient = _blobServiceClient.GetBlobContainerClient(container);
+        var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
         var blobClient = containerClient.GetBlobClient(blobName);
         await blobClient.UploadAsync(blobStreamData, new BlobHttpHeaders { ContentType = blobContentType });
 
