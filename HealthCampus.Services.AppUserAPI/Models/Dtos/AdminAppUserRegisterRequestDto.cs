@@ -7,7 +7,7 @@ using HealthCampus.Services.AppUserAPI.Enums;
 
 namespace HealthCampus.Services.AppUserAPI.Models.Dtos
 {
-    public class AdminAppUserRegisterRequestDto : IAppUserRegisterRequestDto
+    public class AdminAppUserRegisterRequestDto
     {
 
         /// <summary>
@@ -59,37 +59,6 @@ namespace HealthCampus.Services.AppUserAPI.Models.Dtos
         public RolesEnum AppRole { get; set; }
 
         public string? PhoneNumber { get; set; }
-
-        public static AppUser ToAppUser<T>(T dto, LanguagesEnum? userLanguage = null) where T : IAppUserRegisterRequestDto
-        {
-            return ToAppUser(dto as AdminAppUserRegisterRequestDto, userLanguage);
-        }
-
-        public static AppUser ToAppUser(AdminAppUserRegisterRequestDto dto, LanguagesEnum? userLanguage = null)
-        {
-            var appUserId = Guid.NewGuid();
-            return new AppUser
-            {
-                Id = appUserId,
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                Email = dto.EmailAddress,
-                UserName = dto.EmailAddress,
-                PhoneNumber = dto.PhoneNumber,
-                TIN = dto.TIN,
-                GenderId = dto.Gender,
-                BirthDate = dto.BirthDate,
-                RegisteredAt = DateTime.UtcNow,
-                Languages = dto.Language == null ? null : new List<AppUserLanguage>()
-                {
-                    new AppUserLanguage
-                    {
-                        AppUserId = appUserId,
-                        LanguageId = dto.Language ?? LanguagesEnum.English,
-                        ProficiencyId = ProficienciesEnum.Native
-                    }
-                }
-            };
-        }
+        
     }
 }

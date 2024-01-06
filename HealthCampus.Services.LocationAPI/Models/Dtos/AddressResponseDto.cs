@@ -49,28 +49,5 @@ namespace HealthCampus.Services.LocationAPI.Models.Dtos
             return $"{City}, {Street} {HouseNumber}/{FlatNumber}, {ZipCode}";
         }
 
-        public static AddressResponseDto FromAddress(Address model)
-        {
-            return new AddressResponseDto()
-            {
-                Id = model.Id,
-                City = model.City,
-                Street = model.Street,
-                HouseNumber = model.HouseNumber,
-                FlatNumber = model.FlatNumber,
-                ZipCode = model.ZipCode,
-            };
-        }
-
-        public static async Task<List<AddressResponseDto>> FromAddressQueryableAsync(IQueryable<Address> models)
-        {
-            var dtos = new List<AddressResponseDto>();
-            await foreach (var model in models.AsAsyncEnumerable())
-            {
-                dtos.Add(FromAddress(model));
-            }
-            return dtos;
-        }
-
     }
 }

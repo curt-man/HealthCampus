@@ -44,17 +44,5 @@ namespace HealthCampus.Services.LocationAPI.Models.Dtos
         [StringLength(6)]
         public string ZipCode { get; set; }
 
-        public static Address ToAddress(AddressUpdateDto dto)
-        {
-            return new Address()
-            {
-                Id = dto.Id,
-                City = dto.City,
-                Street = dto.Street,
-                HouseNumber = dto.HouseNumber,
-                FlatNumber = dto.FlatNumber,
-                ZipCode = dto.ZipCode
-            };
-        }
     }
 }

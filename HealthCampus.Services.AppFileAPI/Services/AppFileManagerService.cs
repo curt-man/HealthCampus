@@ -5,8 +5,9 @@ using Azure.Storage.Blobs.Models;
 using HealthCampus.CommonUtilities.Dto;
 using HealthCampus.Services.AppFileAPI.Controllers;
 using HealthCampus.Services.AppFileAPI.Data;
+using HealthCampus.Services.AppFileAPI.Dtos;
+using HealthCampus.Services.AppFileAPI.Dtos.Mappers;
 using HealthCampus.Services.AppFileAPI.Models;
-using HealthCampus.Services.AppFileAPI.Models.Dto;
 using HealthCampus.Services.AppFileAPI.Services.IService;
 using HealthCampus.Services.AppFileAPI.Utilities;
 using Microsoft.AspNetCore.Identity;
@@ -37,7 +38,7 @@ namespace HealthCampus.Services.AppFileAPI.Services
             var appFiles = new List<AppFileResponseDto>();
             await foreach (var appFile in _dbContext.AppFiles.AsAsyncEnumerable())
             {
-                appFiles.Add(AppFileResponseDto.FromAppFile(appFile));
+                appFiles.Add(appFile.ToAppFileResponseDto());
             }
             return appFiles;
         }
@@ -49,7 +50,7 @@ namespace HealthCampus.Services.AppFileAPI.Services
             if (appFile == null)
                 throw new Exception("File not found");
 
-            var dto = AppFileResponseDto.FromAppFile(appFile);
+            var dto = appFile.ToAppFileResponseDto();
 
             return dto;
         }
@@ -78,7 +79,7 @@ namespace HealthCampus.Services.AppFileAPI.Services
             }
             else
             {
-                appFileGuid = (Guid)(dto.BlobName);
+                appFileGuid = dto.BlobName.Value;
                 appFile = _dbContext.AppFiles.FirstOrDefault(x => x.Id == dto.BlobName);
                 if (appFile == null)
                 {
@@ -106,7 +107,7 @@ namespace HealthCampus.Services.AppFileAPI.Services
             {
                 using (var stream = file.OpenReadStream())
                 {
-                    int fileDuration = _mediaService.GetMediaFileDuration(stream, _logger);
+                    int fileDuration = _mediaService.GetMediaFileDuration(stream);
                     appFile.Duration = fileDuration;
                 }
             }

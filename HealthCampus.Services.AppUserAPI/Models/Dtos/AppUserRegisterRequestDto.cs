@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HealthCampus.Services.AppUserAPI.Models.Dtos
 {
-    public class AppUserRegisterRequestDto : IAppUserRegisterRequestDto
+    public class AppUserRegisterRequestDto
     {
         /// <summary>
         /// The first name of the user.
@@ -27,27 +27,6 @@ namespace HealthCampus.Services.AppUserAPI.Models.Dtos
         [Required]
         [DefaultValue("Welcome@123")]
         public string Password { get; set; }
-
-
-
-        public static AppUser ToAppUser<T>(T dto, LanguagesEnum? userLanguage = null) where T : IAppUserRegisterRequestDto
-        {
-            return ToAppUser(dto as AppUserRegisterRequestDto, userLanguage);
-        }
-
-
-        public static AppUser ToAppUser(AppUserRegisterRequestDto dto, LanguagesEnum? userLanguage = null)
-        {
-            return new AppUser()
-            {
-                Id = Guid.NewGuid(),
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                Email = dto.EmailAddress,
-                UserName = dto.EmailAddress,
-                RegisteredAt = DateTime.UtcNow,
-            };
-        }
 
 
     }

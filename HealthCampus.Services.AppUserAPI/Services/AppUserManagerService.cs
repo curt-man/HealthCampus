@@ -4,6 +4,7 @@ using HealthCampus.CommonUtilities.Enums;
 using HealthCampus.Services.AppUserAPI.Data;
 using HealthCampus.Services.AppUserAPI.Models;
 using HealthCampus.Services.AppUserAPI.Models.Dtos;
+using HealthCampus.Services.AppUserAPI.Models.Dtos.Mappers;
 using HealthCampus.Services.AppUserAPI.Services.IServices;
 using HealthCampus.Services.AppUserAPI.Utilities;
 using Microsoft.AspNetCore.Identity;
@@ -28,7 +29,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             var users = new List<AppUserResponseDto>();
             await foreach (var user in _userManager.Users.AsAsyncEnumerable())
             {
-                users.Add(AppUserResponseDto.FromAppUser(user));
+                users.Add(user.ToAppUserResponse());
             }
             return users;
         }
@@ -40,7 +41,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             {
                 throw new Exception();
             }
-            var dto = AppUserResponseDto.FromAppUser(user);
+            var dto = user.ToAppUserResponse();
             return dto;
         }
 
@@ -51,11 +52,11 @@ namespace HealthCampus.Services.AppUserAPI.Services
             {
                 throw new Exception();
             }
-            var dto = AppUserResponseDto.FromAppUser(user);
+            var dto = user.ToAppUserResponse();
             return dto;
         }
 
-        public async Task<AppUser> RegisterAsync<T>(T request) where T : IAppUserRegisterRequestDto
+        public async Task<AppUser> RegisterAsync(AdminAppUserRegisterRequestDto request)
         {
             var user = await _userManager.FindByEmailAsync(request.EmailAddress);
             if (user != null)
@@ -63,22 +64,41 @@ namespace HealthCampus.Services.AppUserAPI.Services
                 throw new Exception("User already exists!");
             }
 
-            user = T.ToAppUser(request);
+            user = request.ToAppUser();
 
             var result = await _userManager.CreateAsync(user, request.Password);
 
             if (!result.Succeeded)
             {
-                string errors = string.Empty;
-                foreach (var error in result.Errors)
-                {
-                    errors += error.Description + Environment.NewLine;
-                }
+                string errors = String.Join(Environment.NewLine, result.Errors);
                 throw new ArgumentException(errors);
             }
 
             return user;
         }
+
+        public async Task<AppUser> RegisterAsync(AppUserRegisterRequestDto request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.EmailAddress);
+            if (user != null)
+            {
+                throw new Exception("User already exists!");
+            }
+
+            user = request.ToAppUser();
+
+            var result = await _userManager.CreateAsync(user, request.Password);
+
+            if (!result.Succeeded)
+            {
+                string errors = String.Join(Environment.NewLine, result.Errors);
+                throw new ArgumentException(errors);
+            }
+
+            return user;
+        }
+
+
 
         public async Task AssignRoleAsync(AppUserAssignRoleRequestDto dto)
         {
@@ -92,11 +112,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
 
             if (!result.Succeeded)
             {
-                string errors = string.Empty;
-                foreach (var error in result.Errors)
-                {
-                    errors += error.Description + Environment.NewLine;
-                }
+                string errors = String.Join(Environment.NewLine, result.Errors);
                 throw new ArgumentException(errors);
             }
         }
@@ -108,11 +124,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
 
             if (!result.Succeeded)
             {
-                string errors = string.Empty;
-                foreach (var error in result.Errors)
-                {
-                    errors += error.Description + Environment.NewLine;
-                }
+                string errors = String.Join(Environment.NewLine, result.Errors);
                 throw new ArgumentException(errors);
             }
         }
@@ -161,22 +173,18 @@ namespace HealthCampus.Services.AppUserAPI.Services
 
         public async Task UpdateAsync(AppUserUpdateRequestDto dto)
         {
-            AppUser user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            AppUser? user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == dto.Id);
             if(user == null)
             {
                 throw new Exception("User does not exist!");
             }
-            AppUserUpdateRequestDto.MapToAppUser(dto, user);
+            dto.ToAppUser(user);
 
             var result = await _userManager.UpdateAsync(user);
 
             if (!result.Succeeded)
             {
-                string errors = string.Empty;
-                foreach (var error in result.Errors)
-                {
-                    errors += error.Description + Environment.NewLine;
-                }
+                string errors = String.Join(Environment.NewLine, result.Errors);
                 throw new ArgumentException(errors);
             }
 
@@ -184,7 +192,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
 
         public async Task DeleteAsync(Guid appUserId)
         {
-            AppUser user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == appUserId);
+            AppUser? user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == appUserId);
             if (user == null)
             {
                 throw new Exception("User does not exist!");
@@ -193,11 +201,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
 
             if (!result.Succeeded)
             {
-                string errors = string.Empty;
-                foreach (var error in result.Errors)
-                {
-                    errors += error.Description + Environment.NewLine;
-                }
+                string errors = String.Join(Environment.NewLine, result.Errors);
                 throw new ArgumentException(errors);
             }
         }

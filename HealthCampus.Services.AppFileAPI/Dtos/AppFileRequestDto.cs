@@ -4,7 +4,7 @@ using HealthCampus.Services.AppFileAPI.Utilities;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace HealthCampus.Services.AppFileAPI.Models.Dto
+namespace HealthCampus.Services.AppFileAPI.Dtos
 {
     public class AppFileRequestDto
     {

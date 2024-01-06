@@ -1,4 +1,6 @@
-﻿namespace HealthCampus.Services.AppFileAPI.Models.Dto
+﻿using HealthCampus.Services.AppFileAPI.Models;
+
+namespace HealthCampus.Services.AppFileAPI.Dtos
 {
     public class AppFileResponseDto
     {
@@ -42,20 +44,6 @@
         /// </summary>
         public string? ThumbnailUrl { get; set; }
 
-        public static AppFileResponseDto FromAppFile(AppFile appFile)
-        {
-            var appFileDto = new AppFileResponseDto()
-            {
-                Id = appFile.Id,
-                OriginalName = appFile.OriginalName,
-                ContentType = appFile.ContentType,
-                Size = appFile.Size,
-                Duration = appFile.Duration,
-                Url = appFile.Url,
-                DownloadUrl = appFile.DownloadUrl,
-                ThumbnailUrl = appFile.ThumbnailUrl
-            };
-            return appFileDto;
-        }
+        
     }
 }

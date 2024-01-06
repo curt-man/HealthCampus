@@ -2,6 +2,7 @@
 using HealthCampus.CommonUtilities.Utilities;
 using HealthCampus.Services.LocationAPI.Data;
 using HealthCampus.Services.LocationAPI.Models.Dtos;
+using HealthCampus.Services.LocationAPI.Models.Dtos.Mapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -36,7 +37,7 @@ namespace HealthCampus.Services.LocationAPI.Controllers
         {
             try
             {
-                List<AddressResponseDto> addresses = await AddressResponseDto.FromAddressQueryableAsync(_dbContext.Addresses);
+                List<AddressResponseDto> addresses = await _dbContext.Addresses.ToAddressResponseDtoListAsync();
                 _response.Result = addresses;
                 return Ok(_response);
             }
@@ -59,7 +60,7 @@ namespace HealthCampus.Services.LocationAPI.Controllers
                 {
                     return NotFound(_response);
                 }
-                var dto = AddressResponseDto.FromAddress(address);
+                var dto = address.ToAddressResponseDto();
                 _response.Result = dto;
                 return Ok(_response);
             }
@@ -76,7 +77,7 @@ namespace HealthCampus.Services.LocationAPI.Controllers
         {
             try
             {
-                var address = AddressCreateDto.ToAddress(dto);
+                var address = dto.ToAddress();
                 await _dbContext.Addresses.AddAsync(address);
                 await _dbContext.SaveChangesAsync();
                 return Ok(_response);
@@ -94,7 +95,7 @@ namespace HealthCampus.Services.LocationAPI.Controllers
         {
             try
             {
-                var address = AddressUpdateDto.ToAddress(dto);
+                var address = dto.ToAddress();
                 _dbContext.Addresses.Update(address);
                 await _dbContext.SaveChangesAsync();
                 return Ok(_response);

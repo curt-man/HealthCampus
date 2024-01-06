@@ -51,35 +51,5 @@ namespace HealthCampus.Services.AppUserAPI.Models.Dtos
         [Phone]
         public string? PhoneNumber { get; set; }
 
-
-        public static AppUser ToAppUser(AppUserUpdateRequestDto dto)
-        {
-            return new AppUser
-            {
-                Id = dto.Id,
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                SecondName = dto.SecondName,
-                PhoneNumber = dto.PhoneNumber,
-                TIN = dto.TIN,
-                GenderId = dto.Gender,
-                BirthDate = dto.BirthDate,
-                ModifiedAt = DateTime.UtcNow
-            };
-        }
-
-
-        public static void MapToAppUser(AppUserUpdateRequestDto dto, AppUser model)
-        {
-            model.Id = dto.Id;
-            model.FirstName = dto.FirstName;
-            model.LastName = dto.LastName;
-            model.SecondName = dto.SecondName;
-            model.PhoneNumber = dto.PhoneNumber;
-            model.TIN = dto.TIN;
-            model.GenderId = dto.Gender;
-            model.BirthDate = dto.BirthDate;
-            model.ModifiedAt = DateTime.UtcNow;
-        }
     }
 }
