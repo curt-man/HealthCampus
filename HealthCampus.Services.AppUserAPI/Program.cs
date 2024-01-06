@@ -1,4 +1,5 @@
 using AutoMapper;
+using HealthCampus.CommonUtilities.Extensions;
 using HealthCampus.Services.AppUserAPI.Data;
 using HealthCampus.Services.AppUserAPI.Models;
 using HealthCampus.Services.AppUserAPI.Services;
@@ -10,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 // Adding Services
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
 
 #region Configuring Database
 
@@ -27,36 +30,31 @@ builder.Services.AddDbContext<AppUserDbContext>(options =>
 
 #endregion
 
+#region Configuring Services
+
 builder.Services.AddScoped<IJwtGeneratorService, JwtGeneratorService>();
 builder.Services.AddScoped<IAppUserManagerService, AppUserManagerService>();
 
-#region Configuring Authentication
+#endregion
 
-builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
-{
-    options.Password.RequireDigit = false;
-    options.Password.RequiredLength = 6;
-    options.Password.RequireLowercase = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireNonAlphanumeric = false;
-    options.SignIn.RequireConfirmedEmail = false;
-    options.SignIn.RequireConfirmedPhoneNumber = false;
-    options.User.RequireUniqueEmail = true;
-})
-    .AddEntityFrameworkStores<AppUserDbContext>()
-    .AddDefaultTokenProviders();
-builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
+#region Configuring Identity
+
+builder.Services.AddJwtBearerAuthentication(builder.Configuration);
+
+builder.Services.AddAuthorizationPolicies();
+
+builder.Services.AddIdentityConfiguration(builder.Configuration);
 
 #endregion
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
+#region Configuring Swagger
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddSwaggerConfiguration();
 
+#endregion
 
-// 
 var app = builder.Build();
 
 await SeedDatabase();
