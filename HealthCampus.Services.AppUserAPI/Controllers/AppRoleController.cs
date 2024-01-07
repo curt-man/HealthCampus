@@ -1,4 +1,5 @@
-﻿using HealthCampus.CommonUtilities.Dto;
+﻿using Azure;
+using HealthCampus.CommonUtilities.Dto;
 using HealthCampus.Services.AppUserAPI.Data;
 using HealthCampus.Services.AppUserAPI.Models.Dtos;
 using Microsoft.AspNetCore.Http;
@@ -12,55 +13,28 @@ namespace HealthCampus.Services.AppUserAPI.Controllers
     [ApiController]
     public class AppRoleController : ControllerBase
     {
-        private readonly ResponseDto _response;
-
-        private void SetErrorMessageToResponse(string message)
-        {
-            _response.IsSuccess = false;
-            _response.Message = message;
-        }
-
         private readonly AppUserDbContext _dbContext;
 
         public AppRoleController(AppUserDbContext AppUserDbContext)
         {
-            _response = new ResponseDto();
             _dbContext = AppUserDbContext;
         }
 
 
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult<ResponseDto>> GetAppRoles()
+        public async Task<ActionResult<List<IdentityRole<Guid>>>> GetAppRoles()
         {
-            try
-            {
-                var roles = await _dbContext.Roles.ToListAsync();
-                _response.Result = roles;
-                return Ok(_response);
-            }
-            catch (Exception ex)
-            {
-                SetErrorMessageToResponse(ex.Message);
-            }
-            return BadRequest(_response);
+            var roles = await _dbContext.Roles.ToListAsync();
+            return roles;
         }
 
         [HttpGet]
         [Route("Get/Id/{id}")]
-        public async Task<ActionResult<ResponseDto>> Get(Guid id)
+        public async Task<ActionResult<IdentityRole<Guid>>> Get(Guid id)
         {
-            try
-            {
-                var role = await _dbContext.Roles.FirstOrDefaultAsync(x=>x.Id == id);
-                _response.Result = role;
-                return Ok(_response);
-            }
-            catch (Exception ex)
-            {
-                SetErrorMessageToResponse(ex.Message);
-            }
-            return BadRequest(_response);
+            var role = await _dbContext.Roles.FirstOrDefaultAsync(x => x.Id == id);
+            return role;
         }
 
         

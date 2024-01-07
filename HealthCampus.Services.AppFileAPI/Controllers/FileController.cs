@@ -24,19 +24,10 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
 
         [HttpGet]
         [Route("Download/Id/{id}")]
-        public async Task<FileContentResult?> Download(Guid id)
+        public async Task<ActionResult<FileContentResult>> Download(Guid id)
         {
-            FileContentResult? result = null;
-            try
-            {
-                var file = await _appFileManager.DownloadAsync(id);
-                result = file;
-            }
-            catch (Exception)
-            {
-
-            }
-            return result;
+            var file = await _appFileManager.DownloadAsync(id);
+            return Ok(file);
         }
 
 

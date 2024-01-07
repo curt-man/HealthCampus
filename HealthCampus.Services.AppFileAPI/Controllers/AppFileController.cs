@@ -23,14 +23,6 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
     [ApiController]
     public class AppFileController : ControllerBase
     {
-        private ResponseDto response = new ResponseDto();
-
-        private void SetErrorMessageToResponse(string message)
-        {
-            response.IsSuccess = false;
-            response.Message = message;
-        }
-
         private readonly IAppFileManagerService _appFileManager;
 
         public AppFileController(IAppFileManagerService appFileManagerService)
@@ -41,96 +33,61 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
         [HttpGet]
         [Route("")]
         [Authorize]
-        public async Task<ResponseDto> GetAppFilesAsync()
+        public async Task<ActionResult<List<AppFile>>> GetAppFilesAsync()
         {
-            try
-            {
-                var appFiles = await _appFileManager.GetAllAsync();
-
-                response.Result = appFiles;
-            }
-            catch (Exception ex)
-            {
-                SetErrorMessageToResponse(ex.Message);
-            }
-            return response;
+            var appFiles = await _appFileManager.GetAllAsync();
+            return Ok(appFiles);
         }
 
         [HttpGet]
         [Route("Get/Id/{id}")]
-        public async Task<ResponseDto> Get(Guid id)
+        public async Task<ActionResult<AppFile>> Get(Guid id)
         {
-            try
-            {
-                var appFile = await _appFileManager.GetAsync(id);
-
-                response.Result = appFile;
-            }
-            catch (Exception ex)
-            {
-                SetErrorMessageToResponse(ex.Message);
-            }
-            return response;
+            var appFile = await _appFileManager.GetAsync(id);
+            return Ok(appFile);
         }
 
         [HttpPost]
         [Route("Upload")]
         [Consumes("multipart/form-data")]
         [Authorize]
-        public async Task<ResponseDto> Upload([FromForm] AppFileRequestDto request)
+        public async Task<ActionResult> Upload([FromForm] AppFileRequestDto request)
         {
-            try
-            {
-                var appUserId = User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value;
-                if (appUserId == null)
-                    throw new NotFoundException("User does not exist.");
+            var appUserId = User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value;
+            if (appUserId == null)
+                throw new NotFoundException("User does not exist.");
 
-                var appFileId = await _appFileManager.UploadAsync(request, new Guid(appUserId));
-                response.Result = appFileId;
-            }
-            catch (Exception ex)
-            {
-                SetErrorMessageToResponse(ex.Message);
-            }
-            return response;
+            var appFileId = await _appFileManager.UploadAsync(request, new Guid(appUserId));
+
+            return Created(String.Empty, null);
         }
 
 
         [HttpDelete]
         [Route("Delete/Id/{id}")]
         [Authorize]
-        public async Task<ResponseDto> Delete(Guid id)
+        public async Task<ActionResult> Delete(Guid id)
         {
-            try
-            {
-                var appUserId = User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value;
-                if (appUserId == null)
-                    throw new NotFoundException("User does not exist.");
+            var appUserId = User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value;
+            if (appUserId == null)
+                throw new NotFoundException("User does not exist.");
 
-                await _appFileManager.DeleteAsync(id, new Guid(appUserId));
-            }
-            catch (Exception ex)
-            {
-                SetErrorMessageToResponse(ex.Message);
-            }
-            return response;
+            await _appFileManager.DeleteAsync(id, new Guid(appUserId));
+
+            return NoContent();
         }
 
 
         [HttpGet]
         [Route("Download/Id/{id}")]
-        public async Task<ResponseDto> Download(Guid id)
+        public async Task<ActionResult<string>> Download(Guid id)
         {
-            try
-            {
-                var file = await _appFileManager.DownloadAsync(id);
-                response.Result = file;
-            }
-            catch (Exception ex)
-            {
-                SetErrorMessageToResponse(ex.Message);
-            }
-            return response;
+            var file = await _appFileManager.DownloadAsync(id);
+            if (file == null)
+                throw new NotFoundException("File not found");
+            var fileInBase64 = Convert.ToBase64String(file.FileContents);
+
+            return Ok(fileInBase64);
         }
 
     }
