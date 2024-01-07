@@ -3,6 +3,7 @@ using Azure;
 using Azure.Core;
 using Azure.Storage.Blobs.Models;
 using HealthCampus.CommonUtilities.Dto;
+using HealthCampus.CommonUtilities.Exceptions;
 using HealthCampus.Services.AppFileAPI.Controllers;
 using HealthCampus.Services.AppFileAPI.Data;
 using HealthCampus.Services.AppFileAPI.Dtos;
@@ -43,12 +44,12 @@ namespace HealthCampus.Services.AppFileAPI.Services
             return appFiles;
         }
 
-        public AppFileResponseDto Get(Guid appFileId)
+        public async Task<AppFileResponseDto> GetAsync(Guid appFileId)
         {
-            var appFile = _dbContext.AppFiles.FirstOrDefault(x => x.Id == appFileId);
+            var appFile = await _dbContext.AppFiles.FirstOrDefaultAsync(x => x.Id == appFileId);
 
             if (appFile == null)
-                throw new Exception("File not found");
+                throw new NotFoundException("File not found");
 
             var dto = appFile.ToAppFileResponseDto();
 
@@ -58,13 +59,13 @@ namespace HealthCampus.Services.AppFileAPI.Services
         public async Task<Guid> UploadAsync(AppFileRequestDto dto, Guid appUserId)
         {
             if (dto == null)
-                throw new ArgumentNullException(nameof(dto), "Invalid dto");
+                throw new BadRequestException("Invalid dto");
 
             AppFile? appFile;
 
             IFormFile file = dto.FormFile;
             if (file == null || file.Length == 0)
-                throw new ArgumentNullException(nameof(file), "File is not attached");
+                throw new BadRequestException("File is not attached");
 
             Guid appFileGuid;
             if (dto.BlobName == null)
@@ -83,7 +84,7 @@ namespace HealthCampus.Services.AppFileAPI.Services
                 appFile = _dbContext.AppFiles.FirstOrDefault(x => x.Id == dto.BlobName);
                 if (appFile == null)
                 {
-                    throw new ObjectNotFoundException("File not found");
+                    throw new NotFoundException("File not found");
                 }
                 else
                 {
@@ -100,7 +101,7 @@ namespace HealthCampus.Services.AppFileAPI.Services
             FileContentType? fileContentType = _dbContext.FileContentTypes.FirstOrDefault(x => x.Extension == fileExtension);
             if (fileContentType == null)
             {
-                throw new ArgumentException(nameof(file), "File extension is not supported");
+                throw new BadRequestException("File extension is not supported");
             }
 
             if (fileContentType.MediaType == MediaType.Audio || fileContentType.MediaType == MediaType.Video)
@@ -149,7 +150,7 @@ namespace HealthCampus.Services.AppFileAPI.Services
         {
             var appFile = _dbContext.AppFiles.FirstOrDefault(x=>x.Id == appFileId);
             if (appFile == null)
-                throw new Exception("File not found");
+                throw new NotFoundException("File not found");
 
             await _blobService.DeleteBlobAsync(appFile.Id.ToString(), appFile.BlobContainer);
 
@@ -163,7 +164,7 @@ namespace HealthCampus.Services.AppFileAPI.Services
         {
             var appFile = _dbContext.AppFiles.FirstOrDefault(x => x.Id == id);
             if (appFile == null)
-                throw new Exception("File not found");
+                throw new NotFoundException("File not found");
 
             var blob = await _blobService.GetBlobAsync(appFile.Id.ToString(), appFile.BlobContainer);
 

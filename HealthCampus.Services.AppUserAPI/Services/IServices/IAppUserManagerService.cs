@@ -14,7 +14,6 @@ namespace HealthCampus.Services.AppUserAPI.Services.IServices
         Task DeleteAsync(Guid appUserId);
         Task<string> LogInAsync(AppUser user, string password);
         Task<string> LogInAsync(AppUserLoginRequestDto request);
-        Task<AppUser> RegisterAsync(AdminAppUserRegisterRequestDto request);
         Task<AppUser> RegisterAsync(AppUserRegisterRequestDto request);
         Task UpdateAsync(AppUserUpdateRequestDto request);
 

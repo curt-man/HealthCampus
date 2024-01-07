@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Azure;
 using HealthCampus.CommonUtilities.Enums;
+using HealthCampus.CommonUtilities.Exceptions;
 using HealthCampus.Services.AppUserAPI.Data;
 using HealthCampus.Services.AppUserAPI.Models;
 using HealthCampus.Services.AppUserAPI.Models.Dtos;
@@ -39,7 +40,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
             if (user == null)
             {
-                throw new Exception();
+                throw new NotFoundException("User not found");
             }
             var dto = user.ToAppUserResponse();
             return dto;
@@ -50,31 +51,10 @@ namespace HealthCampus.Services.AppUserAPI.Services
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == username);
             if (user == null)
             {
-                throw new Exception();
+                throw new NotFoundException("User not found");
             }
             var dto = user.ToAppUserResponse();
             return dto;
-        }
-
-        public async Task<AppUser> RegisterAsync(AdminAppUserRegisterRequestDto request)
-        {
-            var user = await _userManager.FindByEmailAsync(request.EmailAddress);
-            if (user != null)
-            {
-                throw new Exception("User already exists!");
-            }
-
-            user = request.ToAppUser();
-
-            var result = await _userManager.CreateAsync(user, request.Password);
-
-            if (!result.Succeeded)
-            {
-                string errors = String.Join(Environment.NewLine, result.Errors);
-                throw new ArgumentException(errors);
-            }
-
-            return user;
         }
 
         public async Task<AppUser> RegisterAsync(AppUserRegisterRequestDto request)
@@ -82,7 +62,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             var user = await _userManager.FindByEmailAsync(request.EmailAddress);
             if (user != null)
             {
-                throw new Exception("User already exists!");
+                throw new AlreadyExistException($"User with email {request.EmailAddress} already exists!");
             }
 
             user = request.ToAppUser();
@@ -92,7 +72,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             if (!result.Succeeded)
             {
                 string errors = String.Join(Environment.NewLine, result.Errors);
-                throw new ArgumentException(errors);
+                throw new IdentityException(errors);
             }
 
             return user;
@@ -105,7 +85,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == dto.UserId);
             if(user==null)
             {
-                throw new Exception("User does not exist.");
+                throw new NotFoundException("User does not exist.");
             }
 
             var result = await _userManager.AddToRoleAsync(user, dto.Role.ToString());
@@ -113,7 +93,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             if (!result.Succeeded)
             {
                 string errors = String.Join(Environment.NewLine, result.Errors);
-                throw new ArgumentException(errors);
+                throw new IdentityException(errors);
             }
         }
 
@@ -125,7 +105,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             if (!result.Succeeded)
             {
                 string errors = String.Join(Environment.NewLine, result.Errors);
-                throw new ArgumentException(errors);
+                throw new IdentityException(errors);
             }
         }
 
@@ -138,7 +118,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
 
             if (user == null)
             {
-                throw new Exception("Invalid credentials");
+                throw new IdentityException("Invalid credentials");
             }
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -147,7 +127,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
 
             if (!isPasswordValid)
             {
-                throw new Exception("Invalid credentials");
+                throw new IdentityException("Invalid credentials");
             }
 
             string token = _jwtGenerator.GenerateToken(user, roles);
@@ -164,7 +144,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
 
             if (!isPasswordValid)
             {
-                throw new Exception("Invalid credentials");
+                throw new IdentityException("Invalid credentials");
             }
 
             string token = _jwtGenerator.GenerateToken(user, roles);
@@ -176,7 +156,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             AppUser? user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == dto.Id);
             if(user == null)
             {
-                throw new Exception("User does not exist!");
+                throw new NotFoundException("User does not exist!");
             }
             dto.ToAppUser(user);
 
@@ -185,7 +165,7 @@ namespace HealthCampus.Services.AppUserAPI.Services
             if (!result.Succeeded)
             {
                 string errors = String.Join(Environment.NewLine, result.Errors);
-                throw new ArgumentException(errors);
+                throw new IdentityException(errors);
             }
 
         }
@@ -195,14 +175,14 @@ namespace HealthCampus.Services.AppUserAPI.Services
             AppUser? user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == appUserId);
             if (user == null)
             {
-                throw new Exception("User does not exist!");
+                throw new NotFoundException("User does not exist!");
             }
             var result = await _userManager.DeleteAsync(user);
 
             if (!result.Succeeded)
             {
                 string errors = String.Join(Environment.NewLine, result.Errors);
-                throw new ArgumentException(errors);
+                throw new IdentityException(errors);
             }
         }
 

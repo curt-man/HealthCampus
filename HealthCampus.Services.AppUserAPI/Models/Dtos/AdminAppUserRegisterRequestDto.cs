@@ -7,30 +7,8 @@ using HealthCampus.Services.AppUserAPI.Enums;
 
 namespace HealthCampus.Services.AppUserAPI.Models.Dtos
 {
-    public class AdminAppUserRegisterRequestDto
+    public class AdminAppUserRegisterRequestDto : AppUserRegisterRequestDto
     {
-
-        /// <summary>
-        /// The first name of the user.
-        /// </summary>
-        [Required]
-        [MaxLength(30)]
-        public string FirstName { get; set; }
-
-        /// <summary>
-        /// The last name of the user.
-        /// </summary>
-        [Required]
-        [MaxLength(30)]
-        public string LastName { get; set; }
-
-        [Required]
-        public string EmailAddress { get; set; }
-
-
-        [Required]
-        [DefaultValue("Welcome@123")]
-        public string Password { get; set; }
 
         /// <summary>
         /// The second name of the user.

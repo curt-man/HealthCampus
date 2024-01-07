@@ -1,4 +1,5 @@
-﻿using HealthCampus.Services.AppFileAPI.Services.IService;
+﻿using HealthCampus.CommonUtilities.Exceptions;
+using HealthCampus.Services.AppFileAPI.Services.IService;
 using MediaInfo;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -13,7 +14,7 @@ namespace HealthCampus.Services.AppFileAPI.Services
 
             if (!file.Success)
             {
-                throw new ArgumentException("Media file is corrupted");
+                throw new BadRequestException("Media file is corrupted");
             }
 
             int duration = file.Duration / 1000;

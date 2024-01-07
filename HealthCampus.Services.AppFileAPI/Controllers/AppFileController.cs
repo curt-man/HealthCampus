@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using HealthCampus.Services.AppFileAPI.Services;
 using System.Data.Entity;
 using HealthCampus.Services.AppFileAPI.Dtos;
+using HealthCampus.CommonUtilities.Exceptions;
 
 namespace HealthCampus.Services.AppFileAPI.Controllers
 {
@@ -82,7 +83,7 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
             {
                 var appUserId = User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value;
                 if (appUserId == null)
-                    throw new Exception("User does not exist.");
+                    throw new NotFoundException("User does not exist.");
 
                 var appFileId = await _appFileManager.UploadAsync(request, new Guid(appUserId));
                 response.Result = appFileId;
@@ -104,7 +105,7 @@ namespace HealthCampus.Services.AppFileAPI.Controllers
             {
                 var appUserId = User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value;
                 if (appUserId == null)
-                    throw new Exception("User does not exist.");
+                    throw new NotFoundException("User does not exist.");
 
                 await _appFileManager.DeleteAsync(id, new Guid(appUserId));
             }
