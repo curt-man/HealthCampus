@@ -40,7 +40,6 @@ builder.Services.AddSwaggerConfiguration();
 
 var app = builder.Build();
 
-app.UseGlobalExceptionHandler();
 
 SeedDatabase();
 
@@ -56,6 +55,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseGlobalExceptionHandler();
 
 app.Run();
 

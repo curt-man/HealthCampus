@@ -43,7 +43,7 @@ namespace HealthCampus.CommonUtilities.Middlewares
                 UnauthorizedException => HttpStatusCode.Unauthorized,
                 NotFoundException => HttpStatusCode.NotFound,
                 BadRequestException => HttpStatusCode.BadRequest,
-                IdentityException => HttpStatusCode.BadRequest,
+                IdentityException => HttpStatusCode.Unauthorized,
                 NotImplementedException => HttpStatusCode.NotImplemented,
                 AlreadyExistException => HttpStatusCode.Conflict,
                 _ => HttpStatusCode.InternalServerError

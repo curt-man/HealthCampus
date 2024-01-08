@@ -14,8 +14,6 @@ using HealthCampus.Services.AppFileAPI.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Data.Entity;
-using System.Data.Entity.Core;
 
 namespace HealthCampus.Services.AppFileAPI.Services
 {

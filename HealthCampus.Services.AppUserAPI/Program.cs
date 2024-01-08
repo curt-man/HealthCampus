@@ -57,6 +57,7 @@ builder.Services.AddSwaggerConfiguration();
 
 var app = builder.Build();
 
+
 await SeedDatabase();
 
 // Configure the HTTP request pipeline.
@@ -75,6 +76,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseGlobalExceptionHandler();
 
 app.Run();
 

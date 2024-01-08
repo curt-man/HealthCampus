@@ -60,6 +60,7 @@ builder.Services.AddSingleton<IMediaService, MediaService>();
 
 var app = builder.Build();
 
+
 SeedDatabase();
 
 // Configure the HTTP request pipeline.
@@ -75,6 +76,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseGlobalExceptionHandler();
 
 app.Run();
 
